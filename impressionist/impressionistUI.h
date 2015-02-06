@@ -42,7 +42,13 @@ public:
 	Fl_Window*			m_brushDialog;
 	Fl_Choice*			m_BrushTypeChoice;
 
-	Fl_Slider*			m_BrushSizeSlider;
+    Fl_Slider*			m_BrushSizeSlider;
+	Fl_Slider*			m_BrushLineWidthSlider;
+    Fl_Slider*			m_BrushLineAngleSlider;
+    
+    
+    
+    
 	Fl_Button*          m_ClearCanvasButton;
 
 	// Member functions
@@ -56,6 +62,12 @@ public:
 
 	int					getSize();
 	void				setSize(int size);
+    
+    int					getLineWidth();
+    void				setLineWidth(int lineWidth);
+    
+    int					getLineAngle();
+    void				setLineAngle(int lineAngle);
 
 	// Callbacks for the image filter dialogue (different from
 	// the other callbacks because they aren't static)
@@ -72,6 +84,8 @@ private:
 
 	// All attributes here
 	int		m_nSize;
+    int		m_nLineWidth;
+    int		m_nLineAngle;
 
 	// These attributes are set by the filter kernel UI
 	double fltKernel[FLT_WIDTH*FLT_HEIGHT];		//the kernel of the image filter
@@ -98,6 +112,8 @@ private:
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
+    static void	cb_lineWidthSlides(Fl_Widget* o, void* v);
+    static void	cb_lineAngleSlides(Fl_Widget* o, void* v);
 
 };
 

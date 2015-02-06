@@ -21,10 +21,6 @@ void ScatpointBrush::BrushBegin( const Point source, const Point target )
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg=pDoc->m_pUI;
 
-	int size = pDoc->getSize();
-
-	////////glScatpointSize( (float)size );
-
 	BrushMove( source, target );
 }
 
@@ -37,13 +33,26 @@ void ScatpointBrush::BrushMove( const Point source, const Point target )
 		printf( "PointBrush::BrushMove  document is NULL\n" );
 		return;
 	}
+    
+    int size = pDoc->getSize();
+    
+    int half_size = size / 2;
+    
+    glPointSize(1);
 
-//	glBegin( GL_Scatpoint );
-//		SetColor( source );
-
-//		glVertex2d( target.x, target.y );
-
-//	glEnd();
+	glBegin( GL_POINTS );
+    
+		SetColor( source );
+    
+        for (int i = -half_size; i < half_size; i++) {
+            for (int j = -half_size; j < half_size; j++) {
+                
+                if (frand() < 0.8f) continue;
+                glVertex2d( target.x + i, target.y + j);
+            }
+        }
+    
+	glEnd();
 }
 
 void ScatpointBrush::BrushEnd( const Point source, const Point target )

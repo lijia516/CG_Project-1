@@ -21,12 +21,6 @@ void ScatcircleBrush::BrushBegin( const Point source, const Point target )
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg=pDoc->m_pUI;
 
-	int size = pDoc->getSize();
-
-
-
-	//?????????glScatcircleSize( (float)size );
-
 	BrushMove( source, target );
 }
 
@@ -39,6 +33,9 @@ void ScatcircleBrush::BrushMove( const Point source, const Point target )
 		printf( "PointBrush::BrushMove  document is NULL\n" );
 		return;
 	}
+    
+    int size = pDoc->getSize();
+      
 
 	////????glBegin( GL_Scatcircle );
 	//	SetColor( source );

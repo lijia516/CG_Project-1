@@ -1,4 +1,4 @@
-// 
+//
 // impressionistDoc.cpp
 //
 // It basically maintain the bitmap for answering the color query from the brush.
@@ -93,6 +93,22 @@ int ImpressionistDoc::getSize()
 {
 	return m_pUI->getSize();
 }
+
+
+// Returns the width of the line brush.
+//---------------------------------------------------------
+int ImpressionistDoc::getLineWidth()
+{
+    return m_pUI->getLineWidth();
+}
+
+// Returns the angle of the line brush.
+//---------------------------------------------------------
+int ImpressionistDoc::getLineAngle()
+{
+    return m_pUI->getLineAngle();
+}
+
 
 //---------------------------------------------------------
 // Load the specified image
