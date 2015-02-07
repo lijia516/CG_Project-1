@@ -43,6 +43,9 @@ public:
 	int		getSize();						// get the UI size
 	void	setSize(int size);				// set the UI size
     
+    float		getAlpha();						// get the UI alpha
+    void	setApha(float alpha);				// set the UI alpha
+    
     int		getLineWidth();						// get the UI lineWidth
     void	setLineWidth(int lineWidth);		// set the UI lineWidth
     

@@ -95,6 +95,23 @@ int ImpressionistDoc::getSize()
 	return m_pUI->getSize();
 }
 
+//---------------------------------------------------------
+// set the size of the brush.
+//---------------------------------------------------------
+void ImpressionistDoc::setSize(int size)
+{
+    return m_pUI->setSize(size);
+}
+
+
+//---------------------------------------------------------
+// Returns the size of the brush.
+//---------------------------------------------------------
+float ImpressionistDoc::getAlpha()
+{
+    return m_pUI->getAlpha();
+}
+
 
 // Returns the width of the line brush.
 //---------------------------------------------------------
@@ -103,11 +120,26 @@ int ImpressionistDoc::getLineWidth()
     return m_pUI->getLineWidth();
 }
 
+
+// set the width of the line brush.
+//---------------------------------------------------------
+void ImpressionistDoc::setLineWidth(int lineWidth)
+{
+    return m_pUI->setLineWidth(lineWidth);
+}
+
 // Returns the angle of the line brush.
 //---------------------------------------------------------
 int ImpressionistDoc::getLineAngle()
 {
     return m_pUI->getLineAngle();
+}
+
+// set the angle of the line brush.
+//---------------------------------------------------------
+void ImpressionistDoc::setLineAngle(int lineAngle)
+{
+    return m_pUI->setLineAngle(lineAngle);
 }
 
 

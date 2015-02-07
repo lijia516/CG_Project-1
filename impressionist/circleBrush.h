@@ -8,7 +8,7 @@
 #define CIRCLEBRUSH_H
 
 #include "impBrush.h"
-#define EDGES 100
+#define EDGES 200
 
 class CircleBrush : public ImpBrush
 {

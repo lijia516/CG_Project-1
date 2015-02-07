@@ -35,14 +35,22 @@ void ScatcircleBrush::BrushMove( const Point source, const Point target )
 	}
     
     int size = pDoc->getSize();
+    int half_size = size / 2;
+    
+    for (int i = -half_size; i < half_size; i = i+2) {
+        for (int j = -half_size; j < half_size; j = j+2) {
+            
+            if (frand() < 0.8f) continue;
+            
+            pDoc->setSize(size / 5 + 1);
+            Point p = Point(target.x + i, target.y + j);
+            ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(p, p);
+            // ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(source, p);
+        }
+    }
       
-
-	////????glBegin( GL_Scatcircle );
-	//	SetColor( source );
-
-	//	glVertex2d( target.x, target.y );
-
-	//glEnd();
+    pDoc->setSize(size);
+	
 }
 
 void ScatcircleBrush::BrushEnd( const Point source, const Point target )

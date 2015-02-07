@@ -45,6 +45,7 @@ public:
 	Fl_Choice*			m_BrushTypeChoice;
 
     Fl_Slider*			m_BrushSizeSlider;
+    Fl_Slider*			m_BrushAlphaSlider;
 	Fl_Slider*			m_BrushLineWidthSlider;
     Fl_Slider*			m_BrushLineAngleSlider;
     
@@ -73,6 +74,9 @@ public:
 
 	int					getSize();
 	void				setSize(int size);
+    
+    float				getAlpha();
+    void				setAlpha(float alpha);
     
     int					getLineWidth();
     void				setLineWidth(int lineWidth);
@@ -105,6 +109,7 @@ private:
 
 	// All attributes here
 	int		m_nSize;
+    float	m_nAlpha;
     int		m_nLineWidth;
     int		m_nLineAngle;
 
@@ -136,6 +141,7 @@ private:
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
     
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
+    static void	cb_alphaSlides(Fl_Widget* o, void* v);
     static void	cb_lineWidthSlides(Fl_Widget* o, void* v);
     static void	cb_lineAngleSlides(Fl_Widget* o, void* v);
     

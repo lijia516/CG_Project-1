@@ -39,20 +39,18 @@ void ScatpointBrush::BrushMove( const Point source, const Point target )
     int half_size = size / 2;
     
     glPointSize(1);
-
-	glBegin( GL_POINTS );
     
-		SetColor( source );
     
-        for (int i = -half_size; i < half_size; i++) {
-            for (int j = -half_size; j < half_size; j++) {
-                
-                if (frand() < 0.8f) continue;
-                glVertex2d( target.x + i, target.y + j);
-            }
+    for (int i = -half_size; i < half_size; i++) {
+        for (int j = -half_size; j < half_size; j++) {
+            
+            if (frand() < 0.8f) continue;
+            Point p = Point(target.x + i, target.y + j);
+            
+            ImpBrush::c_pBrushes[BRUSH_POINTS]->BrushMove(p, p);
+           // ImpBrush::c_pBrushes[BRUSH_POINTS]->BrushMove(source, p);
         }
-    
-	glEnd();
+    }
 }
 
 void ScatpointBrush::BrushEnd( const Point source, const Point target )

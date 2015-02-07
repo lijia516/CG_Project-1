@@ -8,6 +8,7 @@
 #include "impressionistDoc.h"
 #include "impressionistUI.h"
 #include "scatlineBrush.h"
+#include <iostream>
 
 extern float frand();
 
@@ -20,12 +21,6 @@ void ScatlineBrush::BrushBegin( const Point source, const Point target )
 {
 	ImpressionistDoc* pDoc = GetDocument();
 	ImpressionistUI* dlg=pDoc->m_pUI;
-
-	int size = pDoc->getSize();
-
-
-
-	//////??????????glScatlineSize( (float)size );
 
 	BrushMove( source, target );
 }
@@ -40,12 +35,33 @@ void ScatlineBrush::BrushMove( const Point source, const Point target )
 		return;
 	}
 
-	//glBegin( GL_Scatline );
-	//	SetColor( source );
-
-	//	glVertex2d( target.x, target.y );
-
-	//glEnd();
+    int size = pDoc->getSize();
+    int half_size = size / 2;
+    int lineWidth = pDoc->getLineWidth();
+    int lineAngle = pDoc->getLineAngle();
+    
+    for (int i = -half_size; i < half_size; i = i + 2) {
+        for (int j = -half_size; j < half_size; j = j + 2) {
+            
+            if (frand() < 0.8f) continue;
+            
+            
+            
+            pDoc->setSize(size / 5 + 1);
+            pDoc->setLineWidth(1);
+            pDoc->setLineAngle(int(frand()*360));
+            
+            std::cout << "angle: " << frand()*360 << "\n";
+            
+            Point p = Point(target.x + i, target.y + j);
+            ImpBrush::c_pBrushes[BRUSH_LINES]->BrushMove(p, p);
+            // ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(source, p);
+        }
+    }
+    
+    pDoc->setSize(size);
+    pDoc->setLineWidth(lineWidth);
+    pDoc->setLineAngle(lineAngle);
 }
 
 void ScatlineBrush::BrushEnd( const Point source, const Point target )
