@@ -53,6 +53,7 @@ public:
     Fl_Window*			m_applyFilterDialog;
     Fl_Button*          m_PreviewFilterButton;
     Fl_Button*          m_ApplyFilterButton;
+    Fl_Button*          m_CancleFilterButton;
     Fl_Int_Input*       m_KernelWidthInput;
     Fl_Int_Input*       m_KernelHeightInput;
     
@@ -84,7 +85,7 @@ public:
     int                 getKernelOffset();
     int                 getKernelHeight();
     int                 getKernelWidth();
-    
+
     
 
 	// Callbacks for the image filter dialogue (different from
@@ -141,16 +142,21 @@ private:
     // filter
     static void	cb_applyFilter(Fl_Menu_* o, void* v);
     static void	static_cb_preview_filter_button(Fl_Widget* o, void* v);
-     void	cb_preview_filter_button(Fl_Widget* o, void* v);
+     static void	cb_preview_filter_button(Fl_Widget* o, void* v);
     
     
     static void	static_cb_apply_filter_button(Fl_Widget* o, void* v);
     void	cb_apply_filter_button(Fl_Widget* o, void* v);
     
+    static void	static_cb_cancle_filter_button(Fl_Widget* o, void* v);
+    void cb_cancle_filter_button(Fl_Widget* o, void* v);
+    
     static void cb_KernelWidthInput(Fl_Widget* o, void* v);
     static void cb_KernelHeightInput(Fl_Widget* o, void* v);
     static void cb_KernelScaleInput(Fl_Widget* o, void* v);
     static void cb_KernelOffsetInput(Fl_Widget* o, void* v);
+    static void cb_view_edge_image(Fl_Menu_* o, void* v);
+    
 
 };
 

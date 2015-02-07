@@ -22,6 +22,7 @@
 #include "scatpointBrush.h"
 #include "scatlineBrush.h"
 #include "scatcircleBrush.h"
+#include <math.h>
 
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
@@ -302,7 +303,7 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
             
             for (int i = 0; i < 3; i++) {
                 
-                sumColor[i] = sumColor[i] / (sumKernl + 1);
+                sumColor[i] = sumColor[i] / (sumKernl);
                 
                 if (sumColor[i] < 0) sumColor[i] =0;
                 else if (sumColor[i] > 255) sumColor[i] = 255;
@@ -319,24 +320,119 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
             
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+}
 
 
+
+
+void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
+                                   int srcBufferWidth, int srcBufferHeight,
+                                   unsigned char* destBuffer,
+                                   const double *filterKernel1,
+                                   const double *filterKernel2,
+                                   int knlWidth, int knlHeight)
+{
+    // This needs to be implemented for image filtering to work.
+    
+    knlWidth = 3;
+    knlHeight = 3;
+    
+    int knlSize = knlWidth * knlHeight;
+    int knlCenterRow = knlHeight / 2;
+    int knlCenterCol = knlWidth / 2;
+    
+    int nRow = 0;
+    int nCol = 0;
+    
+    //    std::cout << divisor << "\n";
+    //     int a;
+    //     std::cin >> a;
+    
+    // int filterKernel2[9] = {1,1,1,1,1,1,1,1,1};
+    
+    
+    for (int row = 0; row < srcBufferHeight; row++) {
+        for (int col = 0; col < srcBufferWidth; col++) {
+            
+            double sumColor1[3] = {0,0,0};
+            double sumColor2[3] = {0,0,0};
+            double sumKernl1 = 0;
+            double sumKernl2 = 0;
+            
+            for (int i = 0; i < knlSize; i++) {
+                
+                int nRow = i / knlWidth + (row - knlCenterRow);
+                int nCol = i % knlWidth + (col - knlCenterCol);
+                
+                //     std::cout << nRow << "," << nCol << "\n";
+                
+                if (nRow < 0 || nCol < 0) continue;
+                
+                sumColor1[0] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') * filterKernel1[i];
+                sumColor2[0] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') * filterKernel2[i];
+                
+                // std::cout << "color[0]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0' << "\n";
+                // std::cout << "filterKernel2[i]: " << filterKernel2[i] << "\n";
+                // std::cout << "sumcolor[0]: " << sumColor[0] << "\n";
+                
+                sumColor1[1] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0') * filterKernel1[i];
+                sumColor2[1] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0') * filterKernel2[i];
+                
+                
+                // std::cout << "color[1]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0' << "\n";
+                // std::cout << "sumcolor[1]: " << sumColor[1] << "\n";
+                
+                sumColor1[2] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0') * filterKernel1[i];
+                sumColor2[2] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0') * filterKernel2[i];
+                
+                // std::cout << "color[2]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0' << "\n";
+                //  std::cout << "sumcolor[2]: " << sumColor[2] << "\n";
+                
+                
+                sumKernl1 += filterKernel1[i];
+                sumKernl2 += filterKernel2[i];
+                
+                //    std::cout << "sumKernel: " << sumKernl << "\n";
+                //   int a;
+                //   std::cin >> a;
+                
+            }
+            
+            unsigned long temp = 0;
+            
+            for (int i = 0; i < 3; i++) {
+                
+                
+                sumColor1[i] = sumColor1[i] / (sumKernl1 + 1);
+                sumColor2[i] = sumColor2[i] / (sumKernl2 + 1);
+                
+                temp += sqrt(sumColor1[i] * sumColor1[i] + sumColor2[i] * sumColor2[i]);
+              
+                
+            }
+            
+            if ( temp > 255) {
+                
+                destBuffer[3*(row*srcBufferWidth+col)+0] = 255;
+                destBuffer[3*(row*srcBufferWidth+col)+1] = 255;
+                destBuffer[3*(row*srcBufferWidth+col)+2] = 255;
+                
+            } else {
+                
+                destBuffer[3*(row*srcBufferWidth+col)+0] = 0;
+                destBuffer[3*(row*srcBufferWidth+col)+1] = 0;
+                destBuffer[3*(row*srcBufferWidth+col)+2] = 0;
+            }
+            
+    
+            std::cout << "sqrt: " << temp << ",";
+            
+            std::cout << "\n";
+            
+        }
+    }
+    
 }
 
 

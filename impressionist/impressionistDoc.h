@@ -31,6 +31,13 @@ public:
 		const double *filterKernel, 
 		int knlWidth, int knlHeight, 
 		double divisor, double offset );
+    
+    void edgeDetector( const unsigned char* sourceBuffer, //The filter kernel
+                     int srcBufferWidth, int srcBufferHeight,
+                     unsigned char* destBuffer,
+                     const double *filterKernel1,
+                     const double *filterKernel2,
+                     int knlWidth, int knlHeight);
 
 	void	setBrushType(int type);			// called by the UI to set the brushType
 	int		getSize();						// get the UI size
