@@ -59,9 +59,7 @@ public:
 
 	// Used by the filtering code so that we can
 	// preview filters before applying.
-	unsigned char*	m_ucPreviewBackup;
-
-
+	unsigned char*	m_ucPreviewBackup;   
 
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;	

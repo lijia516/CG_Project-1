@@ -171,6 +171,7 @@ ImpressionistUI* ImpressionistUI::whoami(Fl_Menu_* o)
 
 //--------------------------------- Callback Functions --------------------------------------------
 
+
 //------------------------------------------------------------------
 // Brings up a file chooser and then loads the chosen image
 // This is called by the UI when the load image menu item is chosen
@@ -208,6 +209,16 @@ void ImpressionistUI::cb_save_image(Fl_Menu_* o, void* v)
 void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v) 
 {
 	whoami(o)->m_brushDialog->show();
+}
+
+//-------------------------------------------------------------
+// Brings up the apply filter dialog
+// This is called by the UI when the apply filter menu item
+// is chosen
+//-------------------------------------------------------------
+void ImpressionistUI::cb_applyFilter(Fl_Menu_* o, void* v)
+{
+    whoami(o)->m_applyFilterDialog->show();
 }
 
 
@@ -266,6 +277,115 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
     }
 
 	pDoc->setBrushType(type);
+}
+
+
+
+
+// set kernel width
+void ImpressionistUI::cb_KernelWidthInput(Fl_Widget* o, void* v)
+{
+    ((ImpressionistUI*)(o->user_data()))->m_nKernelWidth=size_t( ((Fl_Int_Input *)o)->value() );
+}
+
+
+// set kernel height
+void ImpressionistUI::cb_KernelHeightInput(Fl_Widget* o, void* v)
+{
+    ((ImpressionistUI*)(o->user_data()))->m_nKernelHeight=size_t( ((Fl_Int_Input *)o)->value() );
+}
+
+
+// set kernel scale
+void ImpressionistUI::cb_KernelScaleInput(Fl_Widget* o, void* v)
+{
+    ((ImpressionistUI*)(o->user_data()))->scale=size_t( ((Fl_Int_Input *)o)->value() );
+}
+
+// set kernel offset
+void ImpressionistUI::cb_KernelOffsetInput(Fl_Widget* o, void* v)
+{
+    ((ImpressionistUI*)(o->user_data()))->offset=size_t( ((Fl_Int_Input *)o)->value() );
+}
+
+
+
+// get kernel width
+int ImpressionistUI::getKernelWidth()
+{
+    return m_nKernelWidth;
+}
+
+// get kernel height
+int ImpressionistUI::getKernelHeight()
+{
+    return m_nKernelHeight;
+}
+
+// get kernel scale
+int ImpressionistUI::getKernelScale()
+{
+    return scale;
+}
+
+// get kernel offset
+int ImpressionistUI::getKernelOffset()
+{
+    return offset;
+}
+
+
+//------------------------------------------------------------
+// Preview filter button in Apply filter diagonal.
+// Called by the UI when the apply filter button is pushed
+//------------------------------------------------------------
+void ImpressionistUI::static_cb_preview_filter_button(Fl_Widget* o, void* v)
+{
+    ((ImpressionistUI*)(o->user_data()))->cb_preview_filter_button(o, v);
+}
+
+void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
+{
+    ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+    
+    const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
+    int srcBufferWidth = pDoc->m_nWidth;
+    int srcBufferHeight = pDoc->m_nHeight;
+    unsigned char* destBuffer = pDoc->m_ucPainting;
+   // unsigned char* destBuffer = pDoc->m_ucPreviewBackup;
+    double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
+    const double *filterKernel = fltKernel;
+    
+    pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_nKernelWidth, m_nKernelHeight, scale, offset);
+    
+    m_paintView->refresh();
+}
+
+
+//------------------------------------------------------------
+// Apply filter button in Apply filter diagonal.
+// Called by the UI when the apply filter button is pushed
+//------------------------------------------------------------
+void ImpressionistUI::static_cb_apply_filter_button(Fl_Widget* o, void* v)
+{
+    ((ImpressionistUI*)(o->user_data()))->cb_apply_filter_button(o, v);
+}
+
+void ImpressionistUI::cb_apply_filter_button(Fl_Widget* o, void* v)
+{
+    ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+    
+    const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
+    int srcBufferWidth = pDoc->m_nWidth;
+    int srcBufferHeight = pDoc->m_nHeight;
+    unsigned char* destBuffer = pDoc->m_ucPainting;
+    
+    double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
+    const double *filterKernel = fltKernel;
+    
+    pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_nKernelWidth, m_nKernelHeight, scale, offset);
+    
+    m_paintView->refresh();
 }
 
 //------------------------------------------------------------
@@ -419,7 +539,8 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 	{ "&File",		0, 0, 0, FL_SUBMENU },
 		{ "&Load Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_image },
 		{ "&Save Image...",	FL_ALT + 's', (Fl_Callback *)ImpressionistUI::cb_save_image },
-		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes }, 
+		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
+        { "&Apply Filter...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_applyFilter },
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 		
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
@@ -474,9 +595,62 @@ ImpressionistUI::ImpressionistUI() {
 		Fl_Group::current()->resizable(group);
     m_mainWindow->end();
 
+    
+    //--------------
+    // filter
+    m_applyFilterDialog = new Fl_Window(400, 325, "Apply Filter Dialog");
+    
+    // Add kernel width/height input
+    m_KernelWidthInput = new Fl_Int_Input(100, 10, 50, 25, "kernel width:");
+    m_KernelWidthInput->user_data((void*)(this));   // record self to be used by static callback functions
+    m_KernelWidthInput->value("3");
+    m_KernelWidthInput->callback(cb_KernelWidthInput);
+    
+    
+    m_KernelHeightInput = new Fl_Int_Input(300, 10, 50, 25, "kernel height:");
+    m_KernelHeightInput->user_data((void*)(this));   // record self to be used by static callback functions
+    m_KernelHeightInput->value("3");
+    m_KernelHeightInput->callback(cb_KernelHeightInput);
+    
+    
+    // Add kernel scale/offset
+    
+    m_KernelScaleInput = new Fl_Int_Input(100, 50, 50, 25, "kernel scale:");
+    m_KernelScaleInput->user_data((void*)(this));   // record self to be used by static callback functions
+    m_KernelScaleInput->value("3");
+    m_KernelScaleInput->callback(cb_KernelScaleInput);
+    
+    m_KernelOffsetInput = new Fl_Int_Input(300, 50, 50, 25, "kernel offset:");
+    m_KernelOffsetInput->user_data((void*)(this));   // record self to be used by static callback functions
+    m_KernelOffsetInput->value("3");
+    m_KernelOffsetInput->callback(cb_KernelOffsetInput);
+    
+    
+    // Add a Preview filter button to the dialog
+    
+    m_PreviewFilterButton = new Fl_Button(100,250,100,25,"&Preview Filter");
+    m_PreviewFilterButton->user_data((void*)(this));
+    m_PreviewFilterButton->callback(static_cb_preview_filter_button, this);
+
+    
+    
+    // Add a apply filter button to the dialog
+    
+        m_ApplyFilterButton = new Fl_Button(220,250,150,25,"&Apply Filter");
+        m_ApplyFilterButton->user_data((void*)(this));
+        m_ApplyFilterButton->callback(static_cb_apply_filter_button, this);
+   
+    
+    m_applyFilterDialog->end();
+    
+    
+    
+    
 	// init values
 
 	m_nSize = 10;
+    m_nLineWidth = 5;
+    m_nLineAngle = 45;
 
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -505,7 +679,7 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushSizeSlider->callback(cb_sizeSlides);
     
     
-    // Add brush size slider to the dialog
+    // Add line brush width slider to the dialog
     m_BrushLineWidthSlider = new Fl_Value_Slider(10, 100, 300, 20, "Width");
     m_BrushLineWidthSlider->user_data((void*)(this));	// record self to be used by static callback functions
     m_BrushLineWidthSlider->type(FL_HOR_NICE_SLIDER);
@@ -514,13 +688,13 @@ ImpressionistUI::ImpressionistUI() {
     m_BrushLineWidthSlider->minimum(1);
     m_BrushLineWidthSlider->maximum(10);
     m_BrushLineWidthSlider->step(1);
-    m_BrushLineWidthSlider->value(m_nSize);
+    m_BrushLineWidthSlider->value(m_nLineWidth);
     m_BrushLineWidthSlider->align(FL_ALIGN_RIGHT);
     m_BrushLineWidthSlider->callback(cb_lineWidthSlides);
   //  m_BrushLineWidthSlider->deactivate();
     
     
-    // Add brush size slider to the dialog
+    // Add line brush angle slider to the dialog
     m_BrushLineAngleSlider = new Fl_Value_Slider(10, 120, 300, 20, "Angle");
     m_BrushLineAngleSlider->user_data((void*)(this));	// record self to be used by static callback functions
     m_BrushLineAngleSlider->type(FL_HOR_NICE_SLIDER);
@@ -529,7 +703,7 @@ ImpressionistUI::ImpressionistUI() {
     m_BrushLineAngleSlider->minimum(0);
     m_BrushLineAngleSlider->maximum(360);
     m_BrushLineAngleSlider->step(1);
-    m_BrushLineAngleSlider->value(m_nSize);
+    m_BrushLineAngleSlider->value(m_nLineAngle);
     m_BrushLineAngleSlider->align(FL_ALIGN_RIGHT);
     m_BrushLineAngleSlider->callback(cb_lineAngleSlides);
  //   m_BrushLineAngleSlider->deactivate();

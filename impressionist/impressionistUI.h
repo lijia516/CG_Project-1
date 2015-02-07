@@ -16,6 +16,8 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Light_Button.H>
 #include <FL/Fl_Color_Chooser.H>
+#include <FL/Fl_Int_Input.H>
+
 
 #include "impressionist.h"
 #include "originalView.h"
@@ -47,7 +49,15 @@ public:
     Fl_Slider*			m_BrushLineAngleSlider;
     
     
+// for apply filter dialog
+    Fl_Window*			m_applyFilterDialog;
+    Fl_Button*          m_PreviewFilterButton;
+    Fl_Button*          m_ApplyFilterButton;
+    Fl_Int_Input*       m_KernelWidthInput;
+    Fl_Int_Input*       m_KernelHeightInput;
     
+    Fl_Int_Input*       m_KernelScaleInput;
+    Fl_Int_Input*       m_KernelOffsetInput;
     
 	Fl_Button*          m_ClearCanvasButton;
 
@@ -68,6 +78,14 @@ public:
     
     int					getLineAngle();
     void				setLineAngle(int lineAngle);
+    
+    
+    int                 getKernelScale();
+    int                 getKernelOffset();
+    int                 getKernelHeight();
+    int                 getKernelWidth();
+    
+    
 
 	// Callbacks for the image filter dialogue (different from
 	// the other callbacks because they aren't static)
@@ -77,6 +95,8 @@ public:
 	void				cancelFilter(void);
 	void				applyFilter(void);
 	void				previewFilter(void);
+    
+    
 
 
 private:
@@ -92,7 +112,8 @@ private:
 	double scale,offset;						//the divisor and offset parameter, 
 												//applied after convolving to transform 
 												//the filtered image into the range [0,255]
-
+    int m_nKernelWidth;
+    int m_nKernelHeight;
 
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
@@ -105,15 +126,31 @@ private:
 	static void	cb_load_image(Fl_Menu_* o, void* v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
+   
 	static void	cb_filter_kernel(Fl_Menu_* o, void* v);
 	static void	cb_clear_canvas(Fl_Menu_* o, void* v);
 	static void	cb_exit(Fl_Menu_* o, void* v);
 	static void	cb_about(Fl_Menu_* o, void* v);
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
+    
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
     static void	cb_lineWidthSlides(Fl_Widget* o, void* v);
     static void	cb_lineAngleSlides(Fl_Widget* o, void* v);
+    
+    // filter
+    static void	cb_applyFilter(Fl_Menu_* o, void* v);
+    static void	static_cb_preview_filter_button(Fl_Widget* o, void* v);
+     void	cb_preview_filter_button(Fl_Widget* o, void* v);
+    
+    
+    static void	static_cb_apply_filter_button(Fl_Widget* o, void* v);
+    void	cb_apply_filter_button(Fl_Widget* o, void* v);
+    
+    static void cb_KernelWidthInput(Fl_Widget* o, void* v);
+    static void cb_KernelHeightInput(Fl_Widget* o, void* v);
+    static void cb_KernelScaleInput(Fl_Widget* o, void* v);
+    static void cb_KernelOffsetInput(Fl_Widget* o, void* v);
 
 };
 

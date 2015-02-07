@@ -4,7 +4,7 @@
 // It basically maintain the bitmap for answering the color query from the brush.
 // It also acts as the bridge between brushes and UI (including views)
 //
-
+#include <iostream>
 
 #include <FL/fl_ask.H>
 
@@ -239,6 +239,102 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
 		double divisor, double offset )
 {
 	// This needs to be implemented for image filtering to work.
+    
+    
+    knlWidth = 3;
+    knlHeight = 3;
+    
+    int knlSize = 9; //knlWidth * knlHeight;
+    int knlCenterRow = knlHeight / 2;
+    int knlCenterCol = knlWidth / 2;
+    
+    int nRow = 0;
+    int nCol = 0;
+    
+      //    std::cout << divisor << "\n";
+    //     int a;
+    //     std::cin >> a;
+    
+   // int filterKernel2[9] = {1,1,1,1,1,1,1,1,1};
+    
+    
+    for (int row = 0; row < srcBufferHeight; row++) {
+        for (int col = 0; col < srcBufferWidth; col++) {
+            
+            int sumColor[3] = {0,0,0};
+            int sumKernl = 0;
+            for (int i = 0; i < knlSize; i++) {
+                
+                int nRow = i / knlWidth + (row - knlCenterRow);
+                int nCol = i % knlWidth + (col - knlCenterCol);
+                
+           //     std::cout << nRow << "," << nCol << "\n";
+                
+                if (nRow < 0 || nCol < 0) continue;
+                
+                sumColor[0] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') * filterKernel[i];
+                
+                
+               // std::cout << "color[0]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0' << "\n";
+               // std::cout << "filterKernel2[i]: " << filterKernel2[i] << "\n";
+               // std::cout << "sumcolor[0]: " << sumColor[0] << "\n";
+                
+                sumColor[1] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0') * filterKernel[i];
+                
+                
+               // std::cout << "color[1]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0' << "\n";
+               // std::cout << "sumcolor[1]: " << sumColor[1] << "\n";
+                
+                sumColor[2] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0') * filterKernel[i];
+                
+               // std::cout << "color[2]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0' << "\n";
+              //  std::cout << "sumcolor[2]: " << sumColor[2] << "\n";
+                
+                
+                sumKernl += filterKernel[i];
+                
+            //    std::cout << "sumKernel: " << sumKernl << "\n";
+             //   int a;
+             //   std::cin >> a;
+               
+            }
+            
+            
+            for (int i = 0; i < 3; i++) {
+                
+                sumColor[i] = sumColor[i] / (sumKernl + 1);
+                
+                if (sumColor[i] < 0) sumColor[i] =0;
+                else if (sumColor[i] > 255) sumColor[i] = 255;
+                
+                
+                destBuffer[3*(row*srcBufferWidth+col)+i] = sumColor[i];
+                
+                
+                std::cout << "sumcolor[i]: " << sumColor[i] << ",";
+                
+            }
+            
+             std::cout << "\n";
+            
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 
 }
