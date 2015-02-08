@@ -401,6 +401,66 @@ void ImpressionistUI::cb_lineAngleChoice(Fl_Widget* o, void* v)
 
 
 
+//-------------------------------------------------------------
+// Sets the type of kernel to use to the one chosen in the kernel type
+// choice.
+// Called by the UI when a kernel type is chosen in the kernel type choice
+//-------------------------------------------------------------
+
+void ImpressionistUI::cb_filterChoice(Fl_Widget* o, void* v)
+{
+    ImpressionistUI* pUI=((ImpressionistUI *)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    long long tmp = reinterpret_cast<long long>(v);
+    
+    int type = static_cast<int>(tmp);
+    
+    switch (type) {
+            
+        case BOX_FILTER:
+            
+            for (int i = 0; i < 9; i++) {
+                
+                    pUI->m_KernelValues[i] -> value("1");
+            
+            }
+            
+            break;
+            
+            
+        case BARTLETT_FILTER:
+            
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    
+                    int temp = 3 - abs(i-1)-abs(j-1);
+                    char* c = new char[1];
+                    c[0] = temp+'0';
+                    
+                    pUI->m_KernelValues[i*3+j]->value(c);
+                }
+            }
+            
+            break;
+            
+            
+        case GAUSSIAN_FILTER:
+            
+            ///////////////////////
+            
+            break;
+            
+        default:
+            break;
+    }
+    
+    
+    
+}
+
+
+
 // set kernel width
 void ImpressionistUI::cb_KernelWidthInput(Fl_Widget* o, void* v)
 {
@@ -794,6 +854,13 @@ Fl_Menu_Item ImpressionistUI::lineAngleTypeMenu[NUM_LINE_ANGLE_TYPE+1] = {
 };
 
 
+// Line brush angle choice menu definition
+Fl_Menu_Item ImpressionistUI::filterTypeMenu[NUM_FILTER_TYPE+1] = {
+    {"Box Filter",	FL_ALT+'s', (Fl_Callback *)ImpressionistUI::cb_filterChoice, (void *)BOX_FILTER},
+    {"Bartlett Filter",		FL_ALT+'b', (Fl_Callback *)ImpressionistUI::cb_filterChoice, (void *)BARTLETT_FILTER},
+    {"Gaussian Filter",		FL_ALT+'g', (Fl_Callback *)ImpressionistUI::cb_filterChoice, (void *)GAUSSIAN_FILTER},
+    {0}
+};
 
 
 //----------------------------------------------------
@@ -857,7 +924,7 @@ ImpressionistUI::ImpressionistUI() {
     
     
     
-    
+        // add kernel value input
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 
@@ -865,6 +932,14 @@ ImpressionistUI::ImpressionistUI() {
                 m_KernelValues[i*3+j]->value("1.0");
             }
         }
+    
+    
+        // Add a brush type choice to the dialog
+        m_FilterTypeChoice = new Fl_Choice(55,235,150,25,"&Filter");
+        m_FilterTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
+        m_FilterTypeChoice->menu(filterTypeMenu);
+        m_FilterTypeChoice->callback(cb_filterChoice);
+    
     
     
         // Add a set filter buttton to the dialog
@@ -877,7 +952,7 @@ ImpressionistUI::ImpressionistUI() {
     
         // Add a Preview filter button to the dialog
     
-        m_PreviewFilterButton = new Fl_Button(20,250,100,25,"&Preview Filter");
+        m_PreviewFilterButton = new Fl_Button(20,280,100,25,"&Preview Filter");
         m_PreviewFilterButton->user_data((void*)(this));
         m_PreviewFilterButton->callback(cb_preview_filter_button);
 
@@ -885,14 +960,14 @@ ImpressionistUI::ImpressionistUI() {
     
         // Add a apply filter button to the dialog
     
-        m_ApplyFilterButton = new Fl_Button(150,250,100,25,"&Apply Filter");
+        m_ApplyFilterButton = new Fl_Button(150,280,100,25,"&Apply Filter");
         m_ApplyFilterButton->user_data((void*)(this));
         m_ApplyFilterButton->callback(static_cb_apply_filter_button, this);
    
     
         // Add a cancle filter button to the dialog
     
-        m_CancleFilterButton = new Fl_Button(280,250,100,25,"&Cancle Filter");
+        m_CancleFilterButton = new Fl_Button(280,280,100,25,"&Cancle Filter");
         m_CancleFilterButton->user_data((void*)(this));
         m_CancleFilterButton->callback(static_cb_cancle_filter_button, this);
     

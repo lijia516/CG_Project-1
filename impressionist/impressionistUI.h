@@ -29,6 +29,15 @@
 const int FLT_WIDTH = 5;
 const int FLT_HEIGHT = 5;
 
+// Each filter type has an associated constant.
+enum
+{
+    BOX_FILTER = 0,
+    BARTLETT_FILTER = 1,
+    GAUSSIAN_FILTER = 2,
+    NUM_FILTER_TYPE// Make sure this stays at the end!
+};
+
 class ImpressionistUI {
 public:
 	ImpressionistUI();
@@ -60,6 +69,7 @@ public:
     Fl_Int_Input*       m_KernelWidthInput;
     Fl_Int_Input*       m_KernelHeightInput;
     Fl_Float_Input*     m_KernelValues[9];
+    Fl_Choice*			m_FilterTypeChoice;
     
     Fl_Int_Input*       m_KernelScaleInput;
     Fl_Float_Input*       m_KernelOffsetInput;
@@ -129,6 +139,7 @@ private:
 	static Fl_Menu_Item		menuitems[];
 	static Fl_Menu_Item		brushTypeMenu[NUM_BRUSH_TYPE+1];
     static Fl_Menu_Item		lineAngleTypeMenu[NUM_LINE_ANGLE_TYPE+1];
+    static Fl_Menu_Item		filterTypeMenu[NUM_LINE_ANGLE_TYPE+1];
 
 	static ImpressionistUI*	whoami(Fl_Menu_* o);
 
@@ -156,6 +167,7 @@ private:
     static void	static_cb_preview_filter_button(Fl_Widget* o, void* v);
      static void	cb_preview_filter_button(Fl_Widget* o, void* v);
     
+    static void cb_filterChoice(Fl_Widget* o, void* v);
     
     static void	static_cb_apply_filter_button(Fl_Widget* o, void* v);
     void	cb_apply_filter_button(Fl_Widget* o, void* v);
@@ -169,6 +181,8 @@ private:
     static void cb_KernelOffsetInput(Fl_Widget* o, void* v);
     static void cb_view_edge_image(Fl_Menu_* o, void* v);
     static void cb_view_grayscale_image(Fl_Menu_* o, void* v);
+    
+
     
 
 };
