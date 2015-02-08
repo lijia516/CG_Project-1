@@ -269,3 +269,38 @@ void PaintView::RestoreContent()
 //	glDrawBuffer(GL_FRONT);
 }
 
+
+
+int PaintView::getPointGradient()
+{
+    
+    int xGradFilter[3] = {-1, 0, 1};
+    int yGradFilter[3] = {1, 0, -1};
+    
+    double sumXGF = 0;
+    for (int i = 0; i < 3; i++) {
+        
+        Point source( coord.x + i - 1, m_nEndRow - coord.y );
+        
+        GLubyte color[3];
+        memcpy ( color, m_pDoc->GetOriginalPixel( source ), 3 );
+        
+        sumXGF += (0.299 * (color[0] - '0') + 0.587 * (color[1] - '0') + 0.114 * (color[2] - '0')) * xGradFilter[i];
+        
+    }
+    
+    double sumYGF = 0;
+    for (int j = 0; j < 3; j++) {
+        
+        Point source( coord.x, m_nWindowHeight - (coord.y + j - 1) );
+        
+        GLubyte color[3];
+        memcpy ( color, m_pDoc->GetOriginalPixel( source ), 3 );
+        
+        sumYGF += (0.299 * (color[0] - '0') + 0.587 * (color[1] - '0') + 0.114 * (color[2] - '0')) * yGradFilter[j];
+        
+    }
+    
+    return int (atan(sumYGF/sumXGF) * 180 / PI + 90);
+}
+

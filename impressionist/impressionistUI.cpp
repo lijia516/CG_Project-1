@@ -257,10 +257,19 @@ void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
     
     ImpressionistDoc* pDoc=whoami(o)->getDocument();
     
+    
+    
+    // grayscale
     const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
     int srcBufferWidth = pDoc->m_nWidth;
     int srcBufferHeight = pDoc->m_nHeight;
     unsigned char* destBuffer = pDoc->m_ucPreviewBackup;
+
+    pDoc->grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
+    
+    
+    
+    // blurring
     double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
     const double *filterKernel = fltKernel;
     
@@ -269,21 +278,22 @@ void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
     int m_KernelWidth = 3; //pDoc->m_pUI->m_nKernelWidth;
     int m_KernelHeight = 3; //pDoc->m_pUI->m_nKernelHeight;
     
+    sourceBuffer = pDoc->m_ucPreviewBackup;
+    destBuffer = pDoc->m_ucPreviewBackup2;
+    
     pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, m_scale, m_offset);
     
+    double sobelEdgeDetectKnl1[9] = {1,2,1,0,0,0,-1,-2,-1};
+    double sobelEdgeDetectKnl2[9] = {1,0,-1,2,0,-2,1,0,-1};
     
-     double sobelEdgeDetectKnl1[9] = {1,2,1,0,0,0,-1,-2,-1};
-     double sobelEdgeDetectKnl2[9] = {1,0,-1,2,0,-2,1,0,-1};
     
-    
-     sourceBuffer = pDoc->m_ucPreviewBackup;
-     destBuffer = pDoc->m_ucPainting;
-    
+    // edge detection
+    sourceBuffer = pDoc->m_ucPreviewBackup2;
+    destBuffer = pDoc->m_ucPainting;
 
-     pDoc->edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
+    pDoc->edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
     
-    
-     pDoc->m_pUI->m_paintView->refresh();
+    pDoc->m_pUI->m_paintView->refresh();
     
 }
 
@@ -694,7 +704,7 @@ int ImpressionistUI::getLineAngle()
             break;
             
         case GRADIENT:
-            //???????????
+            m_nLineAngle = m_paintView->getPointGradient();
             break;
             
         default:

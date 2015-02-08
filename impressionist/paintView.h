@@ -29,6 +29,10 @@ public:
 	void SaveCurrentContent();
 
 	void RestoreContent();
+    
+    
+    int getPointGradient();
+    
 
 	ImpressionistDoc *m_pDoc;
 
