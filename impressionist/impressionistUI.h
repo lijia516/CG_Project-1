@@ -59,6 +59,7 @@ public:
     Fl_Button*          m_CancleFilterButton;
     Fl_Int_Input*       m_KernelWidthInput;
     Fl_Int_Input*       m_KernelHeightInput;
+    Fl_Float_Input*     m_KernelValues[9];
     
     Fl_Int_Input*       m_KernelScaleInput;
     Fl_Float_Input*       m_KernelOffsetInput;
@@ -91,7 +92,7 @@ public:
     int                 getKernelOffset();
     int                 getKernelHeight();
     int                 getKernelWidth();
-
+    double*             getKernelValues();
     
 
 	// Callbacks for the image filter dialogue (different from
