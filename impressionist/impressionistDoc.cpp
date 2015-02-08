@@ -87,6 +87,7 @@ void ImpressionistDoc::setBrushType(int type)
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[type];
 }
 
+
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
@@ -341,7 +342,7 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
                 else if (sumColor[i] > 255) sumColor[i] = 255;
                 
                 
-                destBuffer[3*(row*srcBufferWidth+col)+i] = sumColor[i];
+                destBuffer[3*(row*srcBufferWidth+col)+i] = sumColor[i] + '0';
                 
                 
                 std::cout << "sumcolor[i]: " << sumColor[i] << ",";
@@ -356,7 +357,7 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
 }
 
 
-
+/*
 
 void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
                                    int srcBufferWidth, int srcBufferHeight,
@@ -364,6 +365,82 @@ void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
                                    const double *filterKernel1,
                                    const double *filterKernel2,
                                    int knlWidth, int knlHeight)
+{
+    // This needs to be implemented for image filtering to work.
+    
+    knlWidth = 3;
+    knlHeight = 3;
+    
+    int knlSize = knlWidth * knlHeight;
+    int knlCenterRow = knlHeight / 2;
+    int knlCenterCol = knlWidth / 2;
+    
+    int nRow = 0;
+    int nCol = 0;
+    
+    
+    for (int row = 0; row < srcBufferHeight; row++) {
+        for (int col = 0; col < srcBufferWidth; col++) {
+            
+            double sumColor[2] = {0,0};
+            double sumKernl1 = 0;
+            double sumKernl2 = 0;
+            
+            for (int i = 0; i < knlSize; i++) {
+                
+                int nRow = i / knlWidth + (row - knlCenterRow);
+                int nCol = i % knlWidth + (col - knlCenterCol);
+                
+                if (nRow < 0 || nCol < 0) continue;
+              
+                sumColor[0] += 0.299 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') + 0.587 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0') + 0.114 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0') * filterKernel1[i];
+                
+                
+                sumColor[1] += 0.299 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') + 0.587 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0') + 0.114 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0') * filterKernel2[i];
+                
+                sumKernl1 += filterKernel1[i];
+                sumKernl2 += filterKernel2[i];
+                
+            }
+            
+            unsigned long temp = 0;
+            
+            temp = sqrt(sumColor[0] * sumColor[0] + sumColor[1] * sumColor[1]);
+            
+            
+            if ( temp < 200) {
+                
+                //white
+                destBuffer[3*(row*srcBufferWidth+col)+0] = 255;
+                destBuffer[3*(row*srcBufferWidth+col)+1] = 255;
+                destBuffer[3*(row*srcBufferWidth+col)+2] = 255;
+                
+            } else {
+                
+                // black
+                destBuffer[3*(row*srcBufferWidth+col)+0] = 0;
+                destBuffer[3*(row*srcBufferWidth+col)+1] = 0;
+                destBuffer[3*(row*srcBufferWidth+col)+2] = 0;
+            }
+            
+    
+            std::cout << "sqrt: " << temp << ",";
+            
+            std::cout << "\n";
+            
+        }
+    }
+    
+}
+*/
+
+
+void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
+                                    int srcBufferWidth, int srcBufferHeight,
+                                    unsigned char* destBuffer,
+                                    const double *filterKernel1,
+                                    const double *filterKernel2,
+                                    int knlWidth, int knlHeight)
 {
     // This needs to be implemented for image filtering to work.
     
@@ -440,7 +517,7 @@ void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
                 sumColor2[i] = sumColor2[i] / (sumKernl2 + 1);
                 
                 temp += sqrt(sumColor1[i] * sumColor1[i] + sumColor2[i] * sumColor2[i]);
-              
+                
                 
             }
             
@@ -457,7 +534,7 @@ void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
                 destBuffer[3*(row*srcBufferWidth+col)+2] = 0;
             }
             
-    
+            
             std::cout << "sqrt: " << temp << ",";
             
             std::cout << "\n";
@@ -466,6 +543,28 @@ void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
     }
     
 }
+
+
+
+void ImpressionistDoc::grayscaleImage( const unsigned char* sourceBuffer, unsigned char* destBuffer, int srcBufferWidth, int srcBufferHeight)
+{
+    
+    for (int row = 0; row < srcBufferHeight; row++) {
+        for (int col = 0; col < srcBufferWidth; col++) {
+      
+            
+            double intensity = 0.299 * (sourceBuffer[3*(row*srcBufferWidth+col)+0] - '0') + 0.587 * (sourceBuffer[3*(row*srcBufferWidth+col)+1] - '0') + 0.114 * (sourceBuffer[3*(row*srcBufferWidth+col)+2] - '0');
+                
+                destBuffer[3*(row*srcBufferWidth+col)+0] = intensity + '0';
+                destBuffer[3*(row*srcBufferWidth+col)+1] = intensity + '0';
+                destBuffer[3*(row*srcBufferWidth+col)+2] = intensity + '0';
+        
+        }
+    }
+}
+ 
+
+
 
 
 //------------------------------------------------------------------

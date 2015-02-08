@@ -249,7 +249,7 @@ void ImpressionistUI::cb_exit(Fl_Menu_* o, void* v)
 
 
 //------------------------------------------------------------
-// Show the original image in the origin view
+// Show the edge image in the origin view
 // Called by the UI when the original image menu item is chosen
 //------------------------------------------------------------
 void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
@@ -279,13 +279,33 @@ void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
      sourceBuffer = pDoc->m_ucPreviewBackup;
      destBuffer = pDoc->m_ucPainting;
     
+
      pDoc->edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
     
+    
+     pDoc->m_pUI->m_paintView->refresh();
+    
+}
+
+
+//------------------------------------------------------------
+// Show the grayscale image in the origin view
+// Called by the UI when the grayscale image menu item is chosen
+//------------------------------------------------------------
+void ImpressionistUI::cb_view_grayscale_image(Fl_Menu_* o, void* v)
+{
+    
+    ImpressionistDoc* pDoc=whoami(o)->getDocument();
+    
+    const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
+    unsigned char* destBuffer = pDoc->m_ucPainting;
+    int srcBufferWidth = pDoc->m_nWidth;
+    int srcBufferHeight = pDoc->m_nHeight;
+    pDoc->grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
     
     pDoc->m_pUI->m_paintView->refresh();
     
 }
-
 
 
 //-----------------------------------------------------------
@@ -311,8 +331,52 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 	//	int type=(int)v;
 	long long tmp = reinterpret_cast<long long>(v);
 	int type = static_cast<int>(tmp);
+        
+    pUI->m_BrushLineWidthSlider->deactivate();
+    pUI->m_BrushLineAngleSlider->deactivate();
+
     
     if (type == 1) {
+        
+        pUI->m_LineAngleTypeChoice->activate();
+        pUI->m_BrushLineWidthSlider->activate();
+        pUI->m_BrushLineAngleSlider->activate();
+        
+    }else{
+        
+        pUI->m_LineAngleTypeChoice->deactivate();
+        pUI->m_LineAngleTypeChoice->deactivate();
+    }
+    
+    if (type == 4 || type == 5 || type == 6) {
+        
+        
+        ///////////////////////////
+        ///////multiColor stuff////
+        //////////////////////////
+        
+    }
+    
+	pDoc->setBrushType(type);
+}
+
+
+
+//-------------------------------------------------------------
+// Sets the type of line angle to use to the one chosen in the line angle type
+// choice.
+// Called by the UI when a line anlge type is chosen in the line anlge choice
+//-------------------------------------------------------------
+void ImpressionistUI::cb_lineAngleChoice(Fl_Widget* o, void* v)
+{
+    ImpressionistUI* pUI=((ImpressionistUI *)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    //	int type=(int)v;
+    long long tmp = reinterpret_cast<long long>(v);
+    int lineAngleType = static_cast<int>(tmp);
+    
+    if (lineAngleType == 0) {
         
         pUI->m_BrushLineWidthSlider->activate();
         pUI->m_BrushLineAngleSlider->activate();
@@ -321,10 +385,9 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
         pUI->m_BrushLineWidthSlider->deactivate();
         pUI->m_BrushLineAngleSlider->deactivate();
     }
-
-	pDoc->setBrushType(type);
+    
+    pUI->m_nLineAngleType = lineAngleType;
 }
-
 
 
 
@@ -620,7 +683,26 @@ void ImpressionistUI::setLineWidth( int lineWidth )
 //------------------------------------------------
 int ImpressionistUI::getLineAngle()
 {
+    
+    switch (m_nLineAngleType) {
+        case SLIDER_RIGHT:
+            
+            break;
+            
+        case BRUSH_DIRECTION:
+            //???????????
+            break;
+            
+        case GRADIENT:
+            //???????????
+            break;
+            
+        default:
+            break;
+    }
+    
     return m_nLineAngle;
+    
 }
 
 //-------------------------------------------------
@@ -649,6 +731,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 
     { "&View",		0, 0, 0, FL_SUBMENU },
      //   { "&Original Image",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_view_original_image },
+        { "&Grayscale Image",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_view_grayscale_image },
         { "&Edge Image",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_view_edge_image },
         { 0 },
     
@@ -670,6 +753,15 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE+1] = {
   {"Scattered Circles",	FL_ALT+'d', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES},
   {0}
 };
+
+// Line brush angle choice menu definition
+Fl_Menu_Item ImpressionistUI::lineAngleTypeMenu[NUM_LINE_ANGLE_TYPE+1] = {
+    {"Slider/Right mouse",	FL_ALT+'s', (Fl_Callback *)ImpressionistUI::cb_lineAngleChoice, (void *)SLIDER_RIGHT},
+    {"Brush Direction",		FL_ALT+'b', (Fl_Callback *)ImpressionistUI::cb_lineAngleChoice, (void *)BRUSH_DIRECTION},
+    {"Gradient",		FL_ALT+'g', (Fl_Callback *)ImpressionistUI::cb_lineAngleChoice, (void *)GRADIENT},
+    {0}
+};
+
 
 
 
@@ -774,8 +866,16 @@ ImpressionistUI::ImpressionistUI() {
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushTypeChoice->menu(brushTypeMenu);
 		m_BrushTypeChoice->callback(cb_brushChoice);
-
-		m_ClearCanvasButton = new Fl_Button(240,10,150,25,"&Clear Canvas");
+    
+    
+        // Add a line angle choice to the dialog
+        m_LineAngleTypeChoice = new Fl_Choice(120,45,150,25,"&Line Angle");
+        m_LineAngleTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
+        m_LineAngleTypeChoice->menu(lineAngleTypeMenu);
+        m_LineAngleTypeChoice->callback(cb_lineAngleChoice);
+        m_LineAngleTypeChoice->deactivate();
+		
+        m_ClearCanvasButton = new Fl_Button(240,10,150,25,"&Clear Canvas");
 		m_ClearCanvasButton->user_data((void*)(this));
 		m_ClearCanvasButton->callback(cb_clear_canvas_button);
 

@@ -43,6 +43,7 @@ public:
 // for brush dialog
 	Fl_Window*			m_brushDialog;
 	Fl_Choice*			m_BrushTypeChoice;
+    Fl_Choice*			m_LineAngleTypeChoice;
 
     Fl_Slider*			m_BrushSizeSlider;
     Fl_Slider*			m_BrushAlphaSlider;
@@ -112,6 +113,7 @@ private:
     float	m_nAlpha;
     int		m_nLineWidth;
     int		m_nLineAngle;
+    int     m_nLineAngleType;
 
 	// These attributes are set by the filter kernel UI
 	double fltKernel[FLT_WIDTH*FLT_HEIGHT];		//the kernel of the image filter
@@ -124,6 +126,7 @@ private:
 	// Static class members
 	static Fl_Menu_Item		menuitems[];
 	static Fl_Menu_Item		brushTypeMenu[NUM_BRUSH_TYPE+1];
+    static Fl_Menu_Item		lineAngleTypeMenu[NUM_LINE_ANGLE_TYPE+1];
 
 	static ImpressionistUI*	whoami(Fl_Menu_* o);
 
@@ -138,6 +141,7 @@ private:
 	static void	cb_exit(Fl_Menu_* o, void* v);
 	static void	cb_about(Fl_Menu_* o, void* v);
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
+    static void	cb_lineAngleChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
     
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
@@ -162,6 +166,7 @@ private:
     static void cb_KernelScaleInput(Fl_Widget* o, void* v);
     static void cb_KernelOffsetInput(Fl_Widget* o, void* v);
     static void cb_view_edge_image(Fl_Menu_* o, void* v);
+    static void cb_view_grayscale_image(Fl_Menu_* o, void* v);
     
 
 };

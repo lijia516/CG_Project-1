@@ -38,6 +38,9 @@ public:
                      const double *filterKernel1,
                      const double *filterKernel2,
                      int knlWidth, int knlHeight);
+    
+    // The grayscale image
+    void grayscaleImage( const unsigned char* sourceBuffer, unsigned char* destBuffer, int srcBufferWidth, int srcBufferHeight);
 
 	void	setBrushType(int type);			// called by the UI to set the brushType
 	int		getSize();						// get the UI size
@@ -72,7 +75,8 @@ public:
 	unsigned char*	m_ucPreviewBackup;   
 
 	// The current active brush.
-	ImpBrush*			m_pCurrentBrush;	
+	ImpBrush*			m_pCurrentBrush;
+    
 	// Size of the brush.
 	int m_nSize;
     

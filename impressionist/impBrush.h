@@ -21,6 +21,15 @@ enum
 	NUM_BRUSH_TYPE// Make sure this stays at the end!
 };
 
+// Each line angle type has an associated constant.
+enum
+{
+    SLIDER_RIGHT = 0,
+    BRUSH_DIRECTION = 1,
+    GRADIENT = 2,
+    NUM_LINE_ANGLE_TYPE// Make sure this stays at the end!
+};
+
 
 class ImpressionistDoc; // Pre-declaring class
 
