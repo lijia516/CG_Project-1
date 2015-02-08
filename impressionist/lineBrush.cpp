@@ -42,8 +42,8 @@ void LineBrush::BrushMove( const Point source, const Point target )
         SetColor( source );
     
         for (double i = half_lineWidth; i >= - half_lineWidth; i -= 0.5) {
-            glVertex2d( target.x + i*cos(lineAngle + PI / 2), target.y + i* sin(lineAngle + PI / 2));
-            glVertex2d( target.x + size * cos(lineAngle)+ i*cos(lineAngle + PI / 2), target.y + size * sin(lineAngle)+ i* sin(lineAngle + PI / 2));
+            glVertex2d( target.x - size * cos(lineAngle) / 2 + i*cos(lineAngle + PI / 2), target.y - size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
+            glVertex2d( target.x + size * cos(lineAngle) / 2+ i*cos(lineAngle + PI / 2), target.y + size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
         }
 
 	glEnd();

@@ -9,7 +9,8 @@
 #include "impressionistUI.h"
 #include "paintView.h"
 #include "impBrush.h"
-
+#include <math.h> 
+#include <iostream>
 
 #define LEFT_MOUSE_DOWN		1
 #define LEFT_MOUSE_DRAG		2
@@ -122,13 +123,36 @@ void PaintView::draw()
 			RestoreContent();
 			break;
 		case RIGHT_MOUSE_DOWN:
-
+            lineAngleStartPoint = target;
 			break;
 		case RIGHT_MOUSE_DRAG:
-
-			break;
+            
+            glLineWidth(2);
+            
+            glBegin(GL_LINES);
+                m_pDoc->m_pCurrentBrush->SetColor(source);
+                glVertex2d(lineAngleStartPoint.x, lineAngleStartPoint.y);
+                glVertex2d(target.x, target.y);
+            glEnd();
+			
+            break;
+                
 		case RIGHT_MOUSE_UP:
+            
+            if (target.x == lineAngleStartPoint.x) {
+                
+                m_pDoc->setLineAngle(90);
+                   
+            } else {
+                
+                double temp = (target.y - lineAngleStartPoint.y)*1.0 / (target.x - lineAngleStartPoint.x);
+                
+           //     std::cout << "temp: " << temp<< "\n";
+           //     std::cout << "angle: " << atan(temp) * 180 / PI<< "\n";
 
+                m_pDoc->setLineAngle(atan(temp) * 180 / PI);
+            }
+                
 			break;
 
 		default:

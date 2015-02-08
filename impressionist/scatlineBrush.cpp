@@ -51,7 +51,7 @@ void ScatlineBrush::BrushMove( const Point source, const Point target )
             pDoc->setLineWidth(1);
             pDoc->setLineAngle(int(frand()*360));
             
-            std::cout << "angle: " << frand()*360 << "\n";
+          //  std::cout << "angle: " << frand()*360 << "\n";
             
             Point p = Point(target.x + i, target.y + j);
             ImpBrush::c_pBrushes[BRUSH_LINES]->BrushMove(p, p);

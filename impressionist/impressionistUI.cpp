@@ -314,8 +314,12 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
     
     if (type == 1) {
         
-      //  m_BrushLineWidthSlider->activate();
-      //  m_BrushLineAngleSlider->activate();
+        pUI->m_BrushLineWidthSlider->activate();
+        pUI->m_BrushLineAngleSlider->activate();
+    }else{
+        
+        pUI->m_BrushLineWidthSlider->deactivate();
+        pUI->m_BrushLineAngleSlider->deactivate();
     }
 
 	pDoc->setBrushType(type);
@@ -815,7 +819,7 @@ ImpressionistUI::ImpressionistUI() {
         m_BrushLineWidthSlider->value(m_nLineWidth);
         m_BrushLineWidthSlider->align(FL_ALIGN_RIGHT);
         m_BrushLineWidthSlider->callback(cb_lineWidthSlides);
-        //  m_BrushLineWidthSlider->deactivate();
+        m_BrushLineWidthSlider->deactivate();
     
     
         // Add line brush angle slider to the dialog
@@ -830,7 +834,7 @@ ImpressionistUI::ImpressionistUI() {
         m_BrushLineAngleSlider->value(m_nLineAngle);
         m_BrushLineAngleSlider->align(FL_ALIGN_RIGHT);
         m_BrushLineAngleSlider->callback(cb_lineAngleSlides);
-        //m_BrushLineAngleSlider->deactivate();
+        m_BrushLineAngleSlider->deactivate();
     
     
     
