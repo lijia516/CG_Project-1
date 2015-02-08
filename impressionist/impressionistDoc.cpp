@@ -277,8 +277,8 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
 	// This needs to be implemented for image filtering to work.
     
     
-    knlWidth = 3;
-    knlHeight = 3;
+  //  knlWidth = 3;
+  //  knlHeight = 3;
     
     int knlSize = 9; //knlWidth * knlHeight;
     int knlCenterRow = knlHeight / 2;
@@ -347,11 +347,11 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
                 destBuffer[3*(row*srcBufferWidth+col)+i] = sumColor[i] + '0';
                 
                 
-                std::cout << "sumcolor[i]: " << sumColor[i] << ",";
+            //    std::cout << "sumcolor[i]: " << sumColor[i] << ",";
                 
             }
             
-             std::cout << "\n";
+            // std::cout << "\n";
             
         }
     }

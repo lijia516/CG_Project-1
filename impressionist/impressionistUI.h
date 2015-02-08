@@ -17,6 +17,7 @@
 #include <FL/Fl_Light_Button.H>
 #include <FL/Fl_Color_Chooser.H>
 #include <FL/Fl_Int_Input.H>
+#include <FL/Fl_Float_Input.H>
 
 
 #include "impressionist.h"
@@ -60,7 +61,7 @@ public:
     Fl_Int_Input*       m_KernelHeightInput;
     
     Fl_Int_Input*       m_KernelScaleInput;
-    Fl_Int_Input*       m_KernelOffsetInput;
+    Fl_Float_Input*       m_KernelOffsetInput;
     
 	Fl_Button*          m_ClearCanvasButton;
 
