@@ -23,6 +23,7 @@
 #include "scatlineBrush.h"
 #include "scatcircleBrush.h"
 #include "triangleBrush.h"
+#include "randscatlineBrush.h"
 #include <math.h>
 
 
@@ -63,6 +64,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatcircleBrush( this, "Scattered Circles" );
     ImpBrush::c_pBrushes[BRUSH_TRIANGLE]
     = new TriangleBrush( this, "Triangle" );
+    ImpBrush::c_pBrushes[BRUSH_RANDSCATTERED_LINES]
+    = new RandScatlineBrush( this, "RandScattered Lines" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
