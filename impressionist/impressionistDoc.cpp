@@ -556,3 +556,45 @@ int ImpressionistDoc::checkEdge(int targetX, int targetY)
 }
 
 
+void ImpressionistDoc::freePreviewBackup() {
+    
+    delete [] m_ucPreviewBackup;
+    delete [] m_ucPreviewBackup2;
+    
+    m_ucPreviewBackup	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
+    m_ucPreviewBackup2	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
+}
+
+
+/*
+int ImpressionistDoc::previewPaintView(unsigned char* previewBackup){
+    
+    // note that both OpenGL pixel storage and the Windows BMP format
+    // store pixels left-to-right, BOTTOM-to-TOP!!  thus all the fiddling
+    // around with startrow.
+    glDrawBuffer(GL_BACK);
+    std::cout<<"hello prevoewPaintView func" <<"\n";
+    
+    Point scrollpos;// = GetScrollPosition();
+    scrollpos.x = 0;
+    scrollpos.y	= 0;
+    
+    int drawWidth, drawHeight;
+    drawWidth = fmin( m_pUI->m_paintView->getWindowWidth(), m_nPaintWidth );
+    drawHeight = fmin( m_pUI->m_paintView->getWindowHeight(), m_nPaintHeight );
+    
+    int startrow = m_nPaintHeight - (scrollpos.y + drawHeight);
+    if ( startrow < 0 ) startrow = 0;
+   
+    GLvoid* bitstart;
+    bitstart = previewBackup + 3 * ((m_nPaintWidth * startrow) + scrollpos.x);
+    
+    m_pUI->m_paintView->setPaintBitstart(bitstart);
+    m_pUI->m_paintView->SaveCurrentContent();
+    glFlush();
+    m_pUI->m_paintView->refresh();
+    
+}
+ */
+
+

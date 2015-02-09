@@ -320,5 +320,18 @@ int PaintView::getBrushDirection() {
     
 }
 
+int PaintView::getWindowWidth() {
+    
+    return m_nWindowWidth;
+}
+
+int PaintView::getWindowHeight() {
+    
+    return m_nWindowHeight;
+}
 
 
+void PaintView::setPaintBitstart(GLvoid* painBitstart) {
+    
+    m_pPaintBitstart = painBitstart;
+}

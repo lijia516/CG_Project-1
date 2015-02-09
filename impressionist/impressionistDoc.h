@@ -9,6 +9,7 @@
 
 #include "impressionist.h"
 #include "bitmap.h"
+#include <stdlib.h>
 
 class ImpressionistUI;
 
@@ -60,6 +61,10 @@ public:
     
     void	getEdgeImage();         // store edge image in m_ucEdgeImage
     void    getGrayscaleImage();    // store grayscale image in m_ucGrayscale Image
+    
+    void    freePreviewBackup();
+    
+   // int     previewPaintView(unsigned char* previewBackup);
 
 // Attributes
 public:

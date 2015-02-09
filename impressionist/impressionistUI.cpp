@@ -265,13 +265,11 @@ void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
     if (pDoc->m_ucEdgeImage) {
             
         if (pDoc->hasEdgeImage == false) {
-        
-            pDoc->m_pUI->m_origView->setOriginalView(2);
             pDoc->getEdgeImage();
             pDoc->hasEdgeImage = true;
-            
-            pDoc->m_pUI->m_origView->refresh();
         }
+        pDoc->m_pUI->m_origView->setOriginalView(2);
+        pDoc->m_pUI->m_origView->refresh();
     }
     
 }
@@ -291,10 +289,11 @@ void ImpressionistUI::cb_view_grayscale_image(Fl_Menu_* o, void* v)
         if (pDoc->hasGrayscaleImage == false) {
              pDoc->getGrayscaleImage();
              pDoc->hasGrayscaleImage = true;
-             pDoc->m_pUI->m_origView->setOriginalView(1);
-             pDoc->m_pUI->m_origView->refresh();
-       
+            
         }
+        
+        pDoc->m_pUI->m_origView->setOriginalView(1);
+        pDoc->m_pUI->m_origView->refresh();
     }
    
     
@@ -525,22 +524,18 @@ double* ImpressionistUI::getKernelValues()
 // Preview filter button in Apply filter diagonal.
 // Called by the UI when the apply filter button is pushed
 //------------------------------------------------------------
-//void ImpressionistUI::static_cb_preview_filter_button(Fl_Widget* o, void* v)
-//{
-//    ((ImpressionistUI*)(o->user_data()))->cb_preview_filter_button(o, v);
-//}
+
 
 void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
 {
     ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
     
-    const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
+    
+    const unsigned char* sourceBuffer = pDoc->m_ucPainting;
+    unsigned char* destBuffer = pDoc->m_ucPreviewBackup;
+    
     int srcBufferWidth = pDoc->m_nWidth;
     int srcBufferHeight = pDoc->m_nHeight;
-    unsigned char* destBuffer = pDoc->m_ucPainting;
-   // unsigned char* destBuffer = pDoc->m_ucPreviewBackup;
-  //  double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
-  //  const double *filterKernel = fltKernel;
     
     const double *filterKernel = pDoc->m_pUI->getKernelValues();
     
@@ -550,13 +545,10 @@ void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
     int m_KernelHeight = pDoc->m_pUI->m_nKernelHeight;
     
     
-    std::cout << "m_scale" << m_scale << "\n";
-    std::cout << "m_offset" <<  m_offset << "\n";
-    std::cout << "m_KernelWidth" << m_KernelWidth << "\n";
-    std::cout << "m_KernelHeight" << m_KernelHeight << "\n";
-    
-    
     pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_scale, m_KernelHeight, m_offset);
+    
+    pDoc->m_ucPreviewBackup2 = pDoc->m_ucPainting;
+    pDoc->m_ucPainting = pDoc->m_ucPreviewBackup;
     
     pDoc->m_pUI->m_paintView->refresh();
 }
@@ -600,8 +592,13 @@ void ImpressionistUI::static_cb_cancle_filter_button(Fl_Widget* o, void* v)
 
 void ImpressionistUI::cb_cancle_filter_button(Fl_Widget* o, void* v)
 {
-    m_paintView->RestoreContent();
+    
+    ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+    pDoc->m_ucPainting = pDoc->m_ucPreviewBackup2;
     m_paintView->refresh();
+    
+    pDoc->freePreviewBackup();
+    
     m_applyFilterDialog->hide();
 }
 

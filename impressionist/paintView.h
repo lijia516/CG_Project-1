@@ -21,6 +21,8 @@ public:
 	PaintView(int x, int y, int w, int h, const char* l);
 	void draw();
 	int handle(int event);
+    int getWindowWidth();
+    int getWindowHeight();
 
 	void refresh();
 	void resizeWindow(int width, int height);
@@ -29,6 +31,8 @@ public:
     
     int getPerpendicularDirectionToGradient();
     int getBrushDirection();
+    
+    void setPaintBitstart(GLvoid* bitStart);
     
 	ImpressionistDoc *m_pDoc;
 
