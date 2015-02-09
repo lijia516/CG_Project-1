@@ -23,16 +23,13 @@ public:
 	int handle(int event);
 
 	void refresh();
-	
 	void resizeWindow(int width, int height);
-
 	void SaveCurrentContent();
-
 	void RestoreContent();
     
+    int getPerpendicularDirectionToGradient();
+    int getBrushDirection();
     
-    int getPointGradient();
-
 	ImpressionistDoc *m_pDoc;
 
 private:

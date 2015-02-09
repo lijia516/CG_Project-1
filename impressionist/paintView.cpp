@@ -28,6 +28,7 @@
 static int		eventToDo;
 static int		isAnEvent=0;
 static Point	coord;
+static Point	pre_coord;
 
 PaintView::PaintView(int			x, 
 					 int			y, 
@@ -111,14 +112,17 @@ void PaintView::draw()
 		switch (eventToDo) 
 		{
 		case LEFT_MOUSE_DOWN:
+    
 			m_pDoc->m_pCurrentBrush->BrushBegin( source, target );
+            
 			break;
 		case LEFT_MOUSE_DRAG:
+          
 			m_pDoc->m_pCurrentBrush->BrushMove( source, target );
 			break;
 		case LEFT_MOUSE_UP:
+          
 			m_pDoc->m_pCurrentBrush->BrushEnd( source, target );
-
 			SaveCurrentContent();
 			RestoreContent();
 			break;
@@ -178,6 +182,7 @@ int PaintView::handle(int event)
 	    redraw();
 		break;
 	case FL_PUSH:
+             pre_coord = coord;
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
 		if (Fl::event_button()>1)
@@ -188,6 +193,7 @@ int PaintView::handle(int event)
 		redraw();
 		break;
 	case FL_DRAG:
+             pre_coord = coord;
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
 		if (Fl::event_button()>1)
@@ -198,6 +204,7 @@ int PaintView::handle(int event)
 		redraw();
 		break;
 	case FL_RELEASE:
+             pre_coord = coord;
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
 		if (Fl::event_button()>1)
@@ -208,6 +215,7 @@ int PaintView::handle(int event)
 		redraw();
 		break;
 	case FL_MOVE:
+             pre_coord = coord;
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
 		break;
@@ -271,7 +279,7 @@ void PaintView::RestoreContent()
 
 
 
-int PaintView::getPointGradient()
+int PaintView::getPerpendicularDirectionToGradient()
 {
     
     int xGradFilter[3] = {-1, 0, 1};
@@ -304,7 +312,13 @@ int PaintView::getPointGradient()
     return int (atan(sumYGF/sumXGF) * 180 / PI + 90);
 }
 
-
+int PaintView::getBrushDirection() {
+    
+    if (pre_coord.x == coord.x) return 90;
+    
+    return int (atan((coord.y - pre_coord.y)/(coord.x - pre_coord.x)) * 180 / PI);
+    
+}
 
 
 

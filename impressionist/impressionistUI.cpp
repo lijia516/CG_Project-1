@@ -804,11 +804,12 @@ int ImpressionistUI::getLineAngle()
             break;
             
         case BRUSH_DIRECTION:
-            //???????????
+            m_nLineAngle = m_paintView->getBrushDirection();
+            
             break;
             
         case GRADIENT:
-            m_nLineAngle = m_paintView->getPointGradient();
+            m_nLineAngle = m_paintView->getPerpendicularDirectionToGradient();
             break;
             
         default:
