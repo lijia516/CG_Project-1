@@ -222,10 +222,10 @@ void ImpressionistUI::cb_applyFilter(Fl_Menu_* o, void* v)
 {
     whoami(o)->m_applyFilterDialog->show();
     m_npreviewNum = 0;
-    whoami(o)->scale = 3;
-    whoami(o)->offset = 3;
+    whoami(o)->scale = 1;
+    whoami(o)->offset = 0;
     whoami(o)->m_nKernelWidth = 3;
-  //  whoami(o)->m_nHeightWidth = 3;
+    whoami(o)->m_nKernelHeight = 3;
 }
 
 
@@ -473,7 +473,7 @@ void ImpressionistUI::cb_KernelHeightInput(Fl_Widget* o, void* v)
 // set kernel scale
 void ImpressionistUI::cb_KernelScaleInput(Fl_Widget* o, void* v)
 {
-    ((ImpressionistUI*)(o->user_data()))->scale = atoi( ((Fl_Int_Input *)o)->value() );
+    ((ImpressionistUI*)(o->user_data()))->scale = atoi( ((Fl_Float_Input *)o)->value() );
 }
 
 // set kernel offset
@@ -559,7 +559,7 @@ void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
     int m_KernelHeight = pDoc->m_pUI->m_nKernelHeight;
     
     std::cout << "before apply func"<<"\n";
-    pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_scale, m_KernelHeight, m_offset);
+    pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, m_scale, m_offset);
     
     pDoc->m_ucPreviewBackup2 = pDoc->m_ucPainting;
     pDoc->m_ucPainting = temp;
@@ -923,29 +923,16 @@ ImpressionistUI::ImpressionistUI() {
     // filter
     m_applyFilterDialog = new Fl_Window(400, 325, "Apply Filter Dialog");
     
-        // Add kernel width/height input
-        m_KernelWidthInput = new Fl_Int_Input(100, 10, 50, 25, "kernel width:");
-        m_KernelWidthInput->user_data((void*)(this));   // record self to be used by static callback functions
-        m_KernelWidthInput->value("3");
-        m_KernelWidthInput->callback(cb_KernelWidthInput);
-    
-    
-        m_KernelScaleInput = new Fl_Int_Input(100, 50, 50, 25, "kernel scale:");
+        // Add kernel scale
+        m_KernelScaleInput = new Fl_Float_Input(100, 50, 50, 25, "kernel scale:");
         m_KernelScaleInput->user_data((void*)(this));   // record self to be used by static callback functions
         m_KernelScaleInput->value("1.0");
         m_KernelScaleInput->callback(cb_KernelScaleInput);
     
-    
-        // Add kernel scale/offset
-    
-    //    m_KernelScaleInput = new Fl_Float_Input(100, 50, 50, 25, "kernel scale:");
-    //    m_KernelScaleInput->user_data((void*)(this));   // record self to be used by static callback functions
-    //    m_KernelScaleInput->value("1.0");
-    //    m_KernelScaleInput->callback(cb_KernelScaleInput);
-    
+        // Add kernel offset
         m_KernelOffsetInput = new Fl_Float_Input(300, 50, 50, 25, "kernel offset:");
         m_KernelOffsetInput->user_data((void*)(this));   // record self to be used by static callback functions
-        m_KernelOffsetInput->value("1.0");
+        m_KernelOffsetInput->value("0.0");
         m_KernelOffsetInput->callback(cb_KernelOffsetInput);
     
     
@@ -966,13 +953,6 @@ ImpressionistUI::ImpressionistUI() {
         m_FilterTypeChoice->menu(filterTypeMenu);
         m_FilterTypeChoice->callback(cb_filterChoice);
     
-    
-    
-        // Add a set filter buttton to the dialog
-    
-    //    m_setFilterButton = new Fl_Button(300,10,100,25,"&Set Filter");
-    //    m_setFilterButton->user_data((void*)(this));
-    //    m_setFilterButton->callback(cb_set_filter_button);
     
     
     

@@ -73,8 +73,8 @@ public:
     Fl_Float_Input*     m_KernelValues[9];
     Fl_Choice*			m_FilterTypeChoice;
     
-    Fl_Int_Input*       m_KernelScaleInput;
-    Fl_Float_Input*       m_KernelOffsetInput;
+    Fl_Float_Input*     m_KernelScaleInput;
+    Fl_Float_Input*     m_KernelOffsetInput;
     
 	Fl_Button*          m_ClearCanvasButton;
 

@@ -340,22 +340,14 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
 {
 	// This needs to be implemented for image filtering to work.
     
+    std::cout << "divisor, offset: " << divisor <<","<<  offset<< ",";
     
-  //  knlWidth = 3;
-  //  knlHeight = 3;
-    
-    int knlSize = 9; //knlWidth * knlHeight;
+    int knlSize =  knlWidth * knlHeight;
     int knlCenterRow = knlHeight / 2;
     int knlCenterCol = knlWidth / 2;
     
     int nRow = 0;
     int nCol = 0;
-    
-      //    std::cout << divisor << "\n";
-    //     int a;
-    //     std::cin >> a;
-    
-   // int filterKernel2[9] = {1,1,1,1,1,1,1,1,1};
     
     
     for (int row = 0; row < srcBufferHeight; row++) {
@@ -403,6 +395,11 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
             for (int i = 0; i < 3; i++) {
                 
                 sumColor[i] = sumColor[i] / (sumKernl);
+                
+               
+                
+                sumColor[i] = sumColor[i] / divisor;
+                sumColor[i] += offset;
                 
                 if (sumColor[i] < 0) sumColor[i] =0;
                 else if (sumColor[i] > 255) sumColor[i] = 255;
