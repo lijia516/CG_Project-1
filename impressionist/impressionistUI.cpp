@@ -258,50 +258,21 @@ void ImpressionistUI::cb_exit(Fl_Menu_* o, void* v)
 //------------------------------------------------------------
 void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
 {
-    
+
     ImpressionistDoc* pDoc=whoami(o)->getDocument();
-    pDoc->m_pUI->m_origView->setOriginalView(2);
-    
-    // grayscale
-    const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
-    int srcBufferWidth = pDoc->m_nWidth;
-    int srcBufferHeight = pDoc->m_nHeight;
-    unsigned char* destBuffer = pDoc->m_ucPreviewBackup;
-
-    pDoc->grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
     
     
-    
-    // blurring
-    double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
-    const double *filterKernel = fltKernel;
-    
-    int m_scale = pDoc->m_pUI->scale;
-    int m_offset = pDoc->m_pUI->offset;
-    int m_KernelWidth = 3; //pDoc->m_pUI->m_nKernelWidth;
-    int m_KernelHeight = 3; //pDoc->m_pUI->m_nKernelHeight;
-    
-    sourceBuffer = pDoc->m_ucPreviewBackup;
-    destBuffer = pDoc->m_ucPreviewBackup2;
-    
-    pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, m_scale, m_offset);
-    
-    double sobelEdgeDetectKnl1[9] = {1,2,1,0,0,0,-1,-2,-1};
-    double sobelEdgeDetectKnl2[9] = {1,0,-1,2,0,-2,1,0,-1};
-    
-    
-    // edge detection
-    sourceBuffer = pDoc->m_ucPreviewBackup2;
-   // destBuffer = pDoc->m_ucPainting;
-
-    destBuffer = pDoc->m_ucEdgeImage;
-    pDoc->edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
-    
-   // pDoc->m_pUI->m_paintView->refresh();
-    
-    
-    
-    pDoc->m_pUI->m_origView->refresh();
+    if (pDoc->m_ucEdgeImage) {
+            
+        if (pDoc->hasEdgeImage == false) {
+        
+            pDoc->m_pUI->m_origView->setOriginalView(2);
+            pDoc->getEdgeImage();
+            pDoc->hasEdgeImage = true;
+            
+            pDoc->m_pUI->m_origView->refresh();
+        }
+    }
     
 }
 
@@ -314,15 +285,18 @@ void ImpressionistUI::cb_view_grayscale_image(Fl_Menu_* o, void* v)
 {
     
     ImpressionistDoc* pDoc=whoami(o)->getDocument();
-    pDoc->m_pUI->m_origView->setOriginalView(1);
     
-    const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
-    unsigned char* destBuffer = pDoc->m_ucGrayscaleImage;
-    int srcBufferWidth = pDoc->m_nWidth;
-    int srcBufferHeight = pDoc->m_nHeight;
-    pDoc->grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
-    
-    pDoc->m_pUI->m_origView->refresh();
+    if (pDoc->m_ucGrayscaleImage) {
+        
+        if (pDoc->hasGrayscaleImage == false) {
+             pDoc->getGrayscaleImage();
+             pDoc->hasGrayscaleImage = true;
+             pDoc->m_pUI->m_origView->setOriginalView(1);
+             pDoc->m_pUI->m_origView->refresh();
+       
+        }
+    }
+   
     
 }
 
@@ -418,7 +392,6 @@ void ImpressionistUI::cb_lineAngleChoice(Fl_Widget* o, void* v)
     
     pUI->m_nLineAngleType = lineAngleType;
 }
-
 
 
 //-------------------------------------------------------------
@@ -687,6 +660,36 @@ void ImpressionistUI::cb_lineAngleSlides(Fl_Widget* o, void* v)
     ((ImpressionistUI*)(o->user_data()))->m_nLineAngle=int( ((Fl_Slider *)o)->value() ) ;
 }
 
+
+
+//-----------------------------------------------------------
+// Updates the edge clipping status from the edge clipping
+// light button
+// Called by the UI when the line width edge clipping light button is pressed
+//-----------------------------------------------------------
+void ImpressionistUI::cb_edgeClippingLightButton(Fl_Widget* o, void* v)
+{
+    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    
+    if (pUI->m_nEdgeClipping==TRUE) pUI->m_nEdgeClipping=FALSE;
+    
+    else {
+        
+        pUI->m_nEdgeClipping=TRUE;
+        
+        if (pDoc->hasEdgeImage == false) {
+        
+            if (pDoc->m_ucEdgeImage) {
+            
+                pDoc->getEdgeImage();
+                pDoc->hasEdgeImage = true;
+            }
+        }
+        
+    }
+}
 
 
 //---------------------------------- per instance functions --------------------------------------
@@ -1020,11 +1023,19 @@ ImpressionistUI::ImpressionistUI() {
         m_LineAngleTypeChoice->callback(cb_lineAngleChoice);
         m_LineAngleTypeChoice->deactivate();
 		
+        // Add clear canvas button
         m_ClearCanvasButton = new Fl_Button(240,10,150,25,"&Clear Canvas");
 		m_ClearCanvasButton->user_data((void*)(this));
 		m_ClearCanvasButton->callback(cb_clear_canvas_button);
 
 
+    
+        // Add ddge clipping button
+        m_EdgeClippingLightButton = new Fl_Light_Button(50,250,150,25,"&Edge Clipping");
+        m_EdgeClippingLightButton->user_data((void*)(this));   // record self to be used by static callback functions
+        m_EdgeClippingLightButton->callback(cb_edgeClippingLightButton);
+    
+    
 		// Add brush size slider to the dialog
 		m_BrushSizeSlider = new Fl_Value_Slider(10, 80, 300, 20, "Size");
 		m_BrushSizeSlider->user_data((void*)(this));	// record self to be used by static callback functions

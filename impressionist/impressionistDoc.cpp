@@ -39,6 +39,9 @@ ImpressionistDoc::ImpressionistDoc()
     m_ucGrayscaleImage   = NULL;
 	m_ucPreviewBackup = NULL;
     m_ucPreviewBackup2 = NULL;
+    
+    hasEdgeImage = false;
+    hasGrayscaleImage = false;
 
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
@@ -146,6 +149,55 @@ void ImpressionistDoc::setLineAngle(int lineAngle)
 }
 
 
+
+// store edge image in m_ucEdgeImage
+//----------------------------------------------------------
+void ImpressionistDoc::getEdgeImage(){
+    
+    
+    // grayscale
+    const unsigned char* sourceBuffer = m_ucBitmap;
+    int srcBufferWidth = m_nWidth;
+    int srcBufferHeight = m_nHeight;
+    unsigned char* destBuffer = m_ucPreviewBackup;
+    
+    grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
+    
+    // blurring
+    double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
+    const double *filterKernel = fltKernel;
+    
+    int m_KernelWidth = 3;
+    int m_KernelHeight = 3;
+    
+    sourceBuffer = m_ucPreviewBackup;
+    destBuffer = m_ucPreviewBackup2;
+    
+    applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, 0, 0);
+    
+    double sobelEdgeDetectKnl1[9] = {1,2,1,0,0,0,-1,-2,-1};
+    double sobelEdgeDetectKnl2[9] = {1,0,-1,2,0,-2,1,0,-1};
+    
+    
+    // edge detection
+    sourceBuffer = m_ucPreviewBackup2;
+    destBuffer = m_ucEdgeImage;
+    edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
+}
+
+// store grayscale image in m_ucGrayscaleImage
+//----------------------------------------------------------
+void ImpressionistDoc::getGrayscaleImage(){
+    
+    // grayscale
+    const unsigned char* sourceBuffer = m_ucBitmap;
+    unsigned char* destBuffer = m_ucGrayscaleImage;
+    int srcBufferWidth = m_nWidth;
+    int srcBufferHeight = m_nHeight;
+    grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
+}
+
+
 //---------------------------------------------------------
 // Load the specified image
 // This is called by the UI when the load image button is 
@@ -186,6 +238,9 @@ int ImpressionistDoc::loadImage(char *iname)
     m_ucGrayscaleImage	= new unsigned char [width*height*3];
 	m_ucPreviewBackup	= new unsigned char [width*height*3];
     m_ucPreviewBackup2	= new unsigned char [width*height*3];
+    
+    hasEdgeImage = false;
+    hasGrayscaleImage = false;
     
 	memset(m_ucPainting, 0, width*height*3);
     memset(m_ucEdgeImage, 0, width*height*3);

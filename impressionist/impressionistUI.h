@@ -60,6 +60,8 @@ public:
 	Fl_Slider*			m_BrushLineWidthSlider;
     Fl_Slider*			m_BrushLineAngleSlider;
     
+    Fl_Light_Button*    m_EdgeClippingLightButton;
+    
     
 // for apply filter dialog
     Fl_Window*			m_applyFilterDialog;
@@ -103,7 +105,6 @@ public:
     int                 getKernelHeight();
     int                 getKernelWidth();
     double*             getKernelValues();
-    
 
 	// Callbacks for the image filter dialogue (different from
 	// the other callbacks because they aren't static)
@@ -126,6 +127,7 @@ private:
     int		m_nLineWidth;
     int		m_nLineAngle;
     int     m_nLineAngleType;
+    bool    m_nEdgeClipping;
 
 	// These attributes are set by the filter kernel UI
 	double fltKernel[FLT_WIDTH*FLT_HEIGHT];		//the kernel of the image filter
@@ -182,6 +184,7 @@ private:
     static void cb_view_edge_image(Fl_Menu_* o, void* v);
     static void cb_view_grayscale_image(Fl_Menu_* o, void* v);
     static void cb_view_original_image(Fl_Menu_* o, void* v);
+    static void cb_edgeClippingLightButton(Fl_Widget* o, void* v);
 
     
 

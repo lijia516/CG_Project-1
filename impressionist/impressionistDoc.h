@@ -57,6 +57,9 @@ public:
     
 	char*	getImageName();					// get the current image name
     int     checkEdge(int targetX, int targetY);
+    
+    void	getEdgeImage();         // store edge image in m_ucEdgeImage
+    void    getGrayscaleImage();    // store grayscale image in m_ucGrayscale Image
 
 // Attributes
 public:
@@ -78,6 +81,12 @@ public:
 	unsigned char*	m_ucPreviewBackup;
     unsigned char*	m_ucPreviewBackup2;
 
+    
+    //if the images have generated
+    bool hasEdgeImage;
+    bool hasGrayscaleImage;
+    
+    
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;
     
