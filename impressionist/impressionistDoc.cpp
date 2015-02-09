@@ -173,7 +173,7 @@ void ImpressionistDoc::getEdgeImage(){
     sourceBuffer = m_ucPreviewBackup;
     destBuffer = m_ucPreviewBackup2;
     
-    applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, 0, 0);
+    applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, 1, 0);
     
     double sobelEdgeDetectKnl1[9] = {1,2,1,0,0,0,-1,-2,-1};
     double sobelEdgeDetectKnl2[9] = {1,0,-1,2,0,-2,1,0,-1};
