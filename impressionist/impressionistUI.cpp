@@ -342,7 +342,7 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
 	long long tmp = reinterpret_cast<long long>(v);
 	int type = static_cast<int>(tmp);
     
-    if (type == 1) {
+    if (type == 1 || type == 4) {
         
         pUI->m_LineAngleTypeChoice->activate();
         pUI->m_BrushLineWidthSlider->activate();
