@@ -304,3 +304,7 @@ int PaintView::getPointGradient()
     return int (atan(sumYGF/sumXGF) * 180 / PI + 90);
 }
 
+
+
+
+

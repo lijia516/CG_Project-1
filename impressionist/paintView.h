@@ -32,7 +32,6 @@ public:
     
     
     int getPointGradient();
-    
 
 	ImpressionistDoc *m_pDoc;
 

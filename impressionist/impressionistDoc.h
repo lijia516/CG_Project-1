@@ -56,7 +56,7 @@ public:
     void	setLineAngle(int lineAngle);		// set the UI lineAngle
     
 	char*	getImageName();					// get the current image name
-	
+    int     checkEdge(int targetX, int targetY);
 
 // Attributes
 public:
@@ -98,6 +98,7 @@ public:
 	GLubyte* GetOriginalPixel( int x, int y );   
 	// Get the color of the original picture at the specified point	
 	GLubyte* GetOriginalPixel( const Point p );
+    
 
 
 

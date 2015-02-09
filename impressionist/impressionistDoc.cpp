@@ -476,4 +476,28 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 }
 
 
+int ImpressionistDoc::checkEdge(int targetX, int targetY)
+{
+    
+    if (targetX < 0) {
+        targetX = 0;
+    } else if (targetX >= m_nPaintWidth) {
+        targetX = m_nPaintWidth - 1;
+    }
+    
+    if (targetY < 0) {
+        targetY = 0;
+    } else if (targetY >= m_nPaintHeight) {
+        targetY = m_nPaintHeight - 1;
+    }
+    
+    
+    if (m_ucEdgeImage) {
+        
+        if (m_ucEdgeImage[3*(targetY * m_nPaintWidth + targetX) + 0] == 255) return 1;
+    }
+    
+    return 0;
+}
+
 

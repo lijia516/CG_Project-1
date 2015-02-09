@@ -9,7 +9,7 @@
 #include "impressionistUI.h"
 #include "lineBrush.h"
 #include <math.h>
-
+#include <iostream>
 
 LineBrush::LineBrush( ImpressionistDoc* pDoc, const char* name ) :
 	ImpBrush(pDoc,name)
@@ -42,8 +42,35 @@ void LineBrush::BrushMove( const Point source, const Point target )
         SetColor( source );
     
         for (double i = half_lineWidth; i >= - half_lineWidth; i -= 0.5) {
-            glVertex2d( target.x - size * cos(lineAngle) / 2 + i*cos(lineAngle + PI / 2), target.y - size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
-            glVertex2d( target.x + size * cos(lineAngle) / 2+ i*cos(lineAngle + PI / 2), target.y + size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
+            
+            if (0) {
+            
+                glVertex2d( target.x - size * cos(lineAngle) / 2 + i*cos(lineAngle + PI / 2), target.y - size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
+                glVertex2d( target.x + size * cos(lineAngle) / 2+ i*cos(lineAngle + PI / 2), target.y + size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
+                
+            } else {
+                
+                int leftSize = 0;
+                for (; leftSize <= size / 2; leftSize++) {
+                    if (pDoc->checkEdge(target.x - leftSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y - leftSize * sin(lineAngle) + i* sin(lineAngle + PI / 2))) break;
+                }
+                
+                leftSize = leftSize - 1;
+                
+                int rightSize = 0;
+                
+                for (; rightSize <= size / 2; rightSize++) {
+                    if (pDoc->checkEdge(target.x + rightSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y + rightSize * sin(lineAngle) + i* sin(lineAngle + PI / 2))) break;
+                }
+                
+                rightSize = rightSize - 1;
+                
+                std::cout<<"leftSize, rightSize: "<<leftSize<<","<<rightSize<<","<<"\n";
+                
+                glVertex2d( target.x - leftSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y - leftSize * sin(lineAngle) + i* sin(lineAngle + PI / 2));
+                glVertex2d( target.x + rightSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y + rightSize * sin(lineAngle) + i* sin(lineAngle + PI / 2));
+            }
+            
         }
 
 	glEnd();
