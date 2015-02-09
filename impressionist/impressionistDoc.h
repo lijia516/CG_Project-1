@@ -62,7 +62,8 @@ public:
     void	getEdgeImage();         // store edge image in m_ucEdgeImage
     void    getGrayscaleImage();    // store grayscale image in m_ucGrayscale Image
     
-    void    freePreviewBackup();
+    void    freePreviewBackup(unsigned char* backup);
+    void    mallocPreviewBackup(unsigned char* backup);
     
    // int     previewPaintView(unsigned char* previewBackup);
 

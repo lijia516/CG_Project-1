@@ -556,16 +556,6 @@ int ImpressionistDoc::checkEdge(int targetX, int targetY)
 }
 
 
-void ImpressionistDoc::freePreviewBackup() {
-    
-    delete [] m_ucPreviewBackup;
-    delete [] m_ucPreviewBackup2;
-    
-    m_ucPreviewBackup	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
-    m_ucPreviewBackup2	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
-}
-
-
 /*
 int ImpressionistDoc::previewPaintView(unsigned char* previewBackup){
     

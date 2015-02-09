@@ -14,6 +14,8 @@
 #include "impressionistUI.h"
 #include "impressionistDoc.h"
 
+static int    m_npreviewNum;
+
 /*
 //------------------------------ Widget Examples -------------------------------------------------
 Here is some example code for all of the widgets that you may need to add to the 
@@ -219,6 +221,7 @@ void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v)
 void ImpressionistUI::cb_applyFilter(Fl_Menu_* o, void* v)
 {
     whoami(o)->m_applyFilterDialog->show();
+    m_npreviewNum = 0;
     whoami(o)->scale = 3;
     whoami(o)->offset = 3;
     whoami(o)->m_nKernelWidth = 3;
@@ -530,9 +533,20 @@ void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
 {
     ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
     
+    std::cout << "m_npreviewNum" << m_npreviewNum <<"\n";
+    
+    if (m_npreviewNum == 0) {
+        m_npreviewNum = 1;
+         std::cout << "change buffer"<<"\n";
+        pDoc->m_ucPreviewBackup = pDoc->m_ucPainting;
+    }
+    
     
     const unsigned char* sourceBuffer = pDoc->m_ucPainting;
-    unsigned char* destBuffer = pDoc->m_ucPreviewBackup;
+    
+    unsigned char* temp = new unsigned char [pDoc->m_nPaintWidth*pDoc->m_nPaintHeight*3];
+    
+    unsigned char* destBuffer = temp;
     
     int srcBufferWidth = pDoc->m_nWidth;
     int srcBufferHeight = pDoc->m_nHeight;
@@ -544,12 +558,11 @@ void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
     int m_KernelWidth = pDoc->m_pUI->m_nKernelWidth;
     int m_KernelHeight = pDoc->m_pUI->m_nKernelHeight;
     
-    
+    std::cout << "before apply func"<<"\n";
     pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_scale, m_KernelHeight, m_offset);
     
     pDoc->m_ucPreviewBackup2 = pDoc->m_ucPainting;
-    pDoc->m_ucPainting = pDoc->m_ucPreviewBackup;
-    
+    pDoc->m_ucPainting = temp;
     pDoc->m_pUI->m_paintView->refresh();
 }
 
@@ -566,17 +579,7 @@ void ImpressionistUI::static_cb_apply_filter_button(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_apply_filter_button(Fl_Widget* o, void* v)
 {
     ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
-    
-    const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
-    int srcBufferWidth = pDoc->m_nWidth;
-    int srcBufferHeight = pDoc->m_nHeight;
-    unsigned char* destBuffer = pDoc->m_ucPainting;
-    
-    double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
-    const double *filterKernel = fltKernel;
-    
-    pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_nKernelWidth, m_nKernelHeight, scale, offset);
-    
+    m_npreviewNum = 0;
     m_paintView->refresh();
 }
 
@@ -594,11 +597,10 @@ void ImpressionistUI::cb_cancle_filter_button(Fl_Widget* o, void* v)
 {
     
     ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
-    pDoc->m_ucPainting = pDoc->m_ucPreviewBackup2;
+    pDoc->m_ucPainting = pDoc->m_ucPreviewBackup;
     m_paintView->refresh();
     
-    pDoc->freePreviewBackup();
-    
+    m_npreviewNum = 0;
     m_applyFilterDialog->hide();
 }
 
@@ -912,7 +914,10 @@ ImpressionistUI::ImpressionistUI() {
 		group->end();
 		Fl_Group::current()->resizable(group);
     m_mainWindow->end();
-
+    
+    
+    m_npreviewNum = 0;
+    
     
     //--------------
     // filter
