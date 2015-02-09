@@ -132,6 +132,14 @@ int ImpressionistDoc::getLineWidth()
     return m_pUI->getLineWidth();
 }
 
+//---------------------------------------------------------
+// Returns the if multi color or not.
+//---------------------------------------------------------
+bool ImpressionistDoc::getMultiColor()
+{
+    return m_pUI->getMultiColor();
+}
+
 
 // set the width of the line brush.
 //---------------------------------------------------------

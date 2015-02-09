@@ -356,13 +356,13 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
         
     }
     
-    if (type == 4 || type == 5 || type == 6) {
+    if (type == 3 || type == 4 || type == 5) {
         
+        pUI->m_MultiColorLightButton->activate();
         
-        ///////////////////////////
-        ///////multiColor stuff////
-        //////////////////////////
+    }else {
         
+        pUI->m_MultiColorLightButton->deactivate();
     }
     
 	pDoc->setBrushType(type);
@@ -691,6 +691,26 @@ void ImpressionistUI::cb_edgeClippingLightButton(Fl_Widget* o, void* v)
 }
 
 
+//-----------------------------------------------------------
+// Updates the edge clipping status from the edge clipping
+// light button
+// Called by the UI when the line width edge clipping light button is pressed
+//-----------------------------------------------------------
+void ImpressionistUI::cb_multiColorLightButton(Fl_Widget* o, void* v)
+{
+    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    
+    if (pUI->m_nMultiColor==TRUE) pUI->m_nMultiColor=FALSE;
+    
+    else {
+        
+        pUI->m_nMultiColor=TRUE;
+        
+    }
+}
+
 //---------------------------------- per instance functions --------------------------------------
 
 //------------------------------------------------
@@ -770,6 +790,14 @@ void ImpressionistUI::setAlpha( float alpha )
         m_BrushAlphaSlider->value(m_nAlpha);
 }
 
+
+//------------------------------------------------
+// Return the multi color
+//------------------------------------------------
+bool ImpressionistUI::getMultiColor()
+{
+    return m_nMultiColor;
+}
 
 //------------------------------------------------
 // Return the line brush width
@@ -995,25 +1023,29 @@ ImpressionistUI::ImpressionistUI() {
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
 		// Add a brush type choice to the dialog
-		m_BrushTypeChoice = new Fl_Choice(50,10,150,25,"&Brush");
+		m_BrushTypeChoice = new Fl_Choice(50,10,180,25,"&Brush");
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushTypeChoice->menu(brushTypeMenu);
 		m_BrushTypeChoice->callback(cb_brushChoice);
     
     
         // Add a line angle choice to the dialog
-        m_LineAngleTypeChoice = new Fl_Choice(120,45,150,25,"&Line Angle");
+        m_LineAngleTypeChoice = new Fl_Choice(80,45,150,25,"&Line Angle");
         m_LineAngleTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
         m_LineAngleTypeChoice->menu(lineAngleTypeMenu);
         m_LineAngleTypeChoice->callback(cb_lineAngleChoice);
         m_LineAngleTypeChoice->deactivate();
 		
         // Add clear canvas button
-        m_ClearCanvasButton = new Fl_Button(240,10,150,25,"&Clear Canvas");
+        m_ClearCanvasButton = new Fl_Button(250,10,120,25,"&Clear Canvas");
 		m_ClearCanvasButton->user_data((void*)(this));
 		m_ClearCanvasButton->callback(cb_clear_canvas_button);
-
-
+    
+        // Add multi color button to control the color source of scatted brush
+        m_MultiColorLightButton = new Fl_Light_Button(250,45,120,25,"&Multi Color");
+        m_MultiColorLightButton->user_data((void*)(this));   // record self to be used by static callback functions
+        m_MultiColorLightButton->callback(cb_multiColorLightButton);
+        m_MultiColorLightButton->deactivate();
     
         // Add ddge clipping button
         m_EdgeClippingLightButton = new Fl_Light_Button(50,250,150,25,"&Edge Clipping");

@@ -47,8 +47,8 @@ void ScatpointBrush::BrushMove( const Point source, const Point target )
             if (frand() < 0.8f) continue;
             Point p = Point(target.x + i, target.y + j);
             
-            ImpBrush::c_pBrushes[BRUSH_POINTS]->BrushMove(p, p);
-           // ImpBrush::c_pBrushes[BRUSH_POINTS]->BrushMove(source, p);
+            if (pDoc->getMultiColor()) ImpBrush::c_pBrushes[BRUSH_POINTS]->BrushMove(p, p);
+            else ImpBrush::c_pBrushes[BRUSH_POINTS]->BrushMove(source, p);
         }
     }
 }

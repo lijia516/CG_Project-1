@@ -44,8 +44,8 @@ void ScatcircleBrush::BrushMove( const Point source, const Point target )
             
             pDoc->setSize(size / 5 + 1);
             Point p = Point(target.x + i, target.y + j);
-            ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(p, p);
-            // ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(source, p);
+            if (pDoc->getMultiColor()) ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(p, p);
+            else ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(source, p);
         }
     }
       
