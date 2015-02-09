@@ -39,9 +39,37 @@ void TriangleBrush::BrushMove( const Point source, const Point target )
 
 	glBegin( GL_POLYGON );
 		SetColor( source );
-        glVertex2d( target.x, target.y + half_size );
-		glVertex2d( target.x - half_size, target.y - half_size );
-        glVertex2d( target.x + half_size, target.y - half_size );
+    
+        if (1) {
+        
+            
+            double upSize = 0;
+            for (; upSize <= half_size; upSize++) {
+                if (pDoc->checkEdge(target.x, target.y + upSize)) break;
+            }
+            
+            double leftSize = 0;
+            for (; leftSize <= half_size; leftSize++) {
+                if (pDoc->checkEdge(target.x - leftSize, target.y - leftSize)) break;
+            }
+            
+            double rightSize = 0;
+            for (; rightSize <= half_size; rightSize++) {
+                if (pDoc->checkEdge(target.x + rightSize, target.y - rightSize)) break;
+            }
+            
+        
+            glVertex2d( target.x, target.y + upSize );
+            glVertex2d( target.x - leftSize, target.y - leftSize );
+            glVertex2d( target.x + rightSize, target.y - rightSize );
+            
+            
+        }else {
+    
+            glVertex2d( target.x, target.y + half_size );
+            glVertex2d( target.x - half_size, target.y - half_size );
+            glVertex2d( target.x + half_size, target.y - half_size );
+        }
 
 	glEnd();
 }

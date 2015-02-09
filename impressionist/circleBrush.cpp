@@ -44,7 +44,24 @@ void CircleBrush::BrushMove( const Point source, const Point target )
     
         for (int i = 0; i < EDGES; i++) {
             double angle = 2 * M_PI * i / EDGES;
-            glVertex2d( target.x + radius * cos(angle), target.y + radius * sin(angle));
+            
+            if (1) {
+                
+                int realRadius = 0;
+                for (; realRadius <= radius; realRadius++) {
+                    if (pDoc->checkEdge(target.x + realRadius * cos(angle), target.y + realRadius * sin(angle))) break;
+                }
+                
+             //   realRadius = realRadius > radius ? radius : realRadius;
+                
+                glVertex2d( target.x + realRadius * cos(angle), target.y + realRadius * sin(angle));
+                
+            }else{
+                
+                glVertex2d( target.x + radius * cos(angle), target.y + radius * sin(angle));
+            }
+            
+            
         }
 	
 	glEnd();

@@ -55,7 +55,8 @@ void LineBrush::BrushMove( const Point source, const Point target )
                     if (pDoc->checkEdge(target.x - leftSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y - leftSize * sin(lineAngle) + i* sin(lineAngle + PI / 2))) break;
                 }
                 
-                leftSize = leftSize - 1;
+                
+                leftSize = leftSize > size / 2 ? size / 2 : leftSize;
                 
                 int rightSize = 0;
                 
@@ -63,7 +64,7 @@ void LineBrush::BrushMove( const Point source, const Point target )
                     if (pDoc->checkEdge(target.x + rightSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y + rightSize * sin(lineAngle) + i* sin(lineAngle + PI / 2))) break;
                 }
                 
-                rightSize = rightSize - 1;
+                rightSize = rightSize > size / 2 ? size / 2 : rightSize;
                 
                 std::cout<<"leftSize, rightSize: "<<leftSize<<","<<rightSize<<","<<"\n";
                 
