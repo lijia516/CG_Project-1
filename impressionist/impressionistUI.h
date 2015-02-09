@@ -181,7 +181,7 @@ private:
     static void cb_KernelOffsetInput(Fl_Widget* o, void* v);
     static void cb_view_edge_image(Fl_Menu_* o, void* v);
     static void cb_view_grayscale_image(Fl_Menu_* o, void* v);
-    
+    static void cb_view_original_image(Fl_Menu_* o, void* v);
 
     
 

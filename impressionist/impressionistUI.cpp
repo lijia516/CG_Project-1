@@ -260,8 +260,7 @@ void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
 {
     
     ImpressionistDoc* pDoc=whoami(o)->getDocument();
-    
-    
+    pDoc->m_pUI->m_origView->setOriginalView(2);
     
     // grayscale
     const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
@@ -293,11 +292,16 @@ void ImpressionistUI::cb_view_edge_image(Fl_Menu_* o, void* v)
     
     // edge detection
     sourceBuffer = pDoc->m_ucPreviewBackup2;
-    destBuffer = pDoc->m_ucPainting;
+   // destBuffer = pDoc->m_ucPainting;
 
+    destBuffer = pDoc->m_ucEdgeImage;
     pDoc->edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
     
-    pDoc->m_pUI->m_paintView->refresh();
+   // pDoc->m_pUI->m_paintView->refresh();
+    
+    
+    
+    pDoc->m_pUI->m_origView->refresh();
     
 }
 
@@ -310,14 +314,30 @@ void ImpressionistUI::cb_view_grayscale_image(Fl_Menu_* o, void* v)
 {
     
     ImpressionistDoc* pDoc=whoami(o)->getDocument();
+    pDoc->m_pUI->m_origView->setOriginalView(1);
     
     const unsigned char* sourceBuffer = pDoc->m_ucBitmap;
-    unsigned char* destBuffer = pDoc->m_ucPainting;
+    unsigned char* destBuffer = pDoc->m_ucGrayscaleImage;
     int srcBufferWidth = pDoc->m_nWidth;
     int srcBufferHeight = pDoc->m_nHeight;
     pDoc->grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
     
-    pDoc->m_pUI->m_paintView->refresh();
+    pDoc->m_pUI->m_origView->refresh();
+    
+}
+
+
+//------------------------------------------------------------
+// Show the original image in the origin view
+// Called by the UI when the original image menu item is chosen
+//------------------------------------------------------------
+void ImpressionistUI::cb_view_original_image(Fl_Menu_* o, void* v)
+{
+    
+    ImpressionistDoc* pDoc=whoami(o)->getDocument();
+    pDoc->m_pUI->m_origView->setOriginalView(0);
+    
+    pDoc->m_pUI->m_origView->refresh();
     
 }
 
@@ -821,7 +841,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ 0 },
 
     { "&View",		0, 0, 0, FL_SUBMENU },
-     //   { "&Original Image",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_view_original_image },
+        { "&Original Image",	FL_ALT + 'o', (Fl_Callback *)ImpressionistUI::cb_view_original_image },
         { "&Grayscale Image",	FL_ALT + 'g', (Fl_Callback *)ImpressionistUI::cb_view_grayscale_image },
         { "&Edge Image",	FL_ALT + 'e', (Fl_Callback *)ImpressionistUI::cb_view_edge_image },
         { 0 },

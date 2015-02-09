@@ -35,6 +35,8 @@ ImpressionistDoc::ImpressionistDoc()
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
 	m_ucPainting	= NULL;
+    m_ucEdgeImage   = NULL;
+    m_ucGrayscaleImage   = NULL;
 	m_ucPreviewBackup = NULL;
     m_ucPreviewBackup2 = NULL;
 
@@ -171,6 +173,8 @@ int ImpressionistDoc::loadImage(char *iname)
 	// release old storage
 	delete [] m_ucBitmap;
 	delete [] m_ucPainting;
+    delete [] m_ucEdgeImage;
+    delete [] m_ucGrayscaleImage;
 	delete [] m_ucPreviewBackup;
     delete [] m_ucPreviewBackup2;
     
@@ -178,9 +182,14 @@ int ImpressionistDoc::loadImage(char *iname)
 
 	// allocate space for draw view
 	m_ucPainting		= new unsigned char [width*height*3];
+    m_ucEdgeImage		= new unsigned char [width*height*3];
+    m_ucGrayscaleImage	= new unsigned char [width*height*3];
 	m_ucPreviewBackup	= new unsigned char [width*height*3];
     m_ucPreviewBackup2	= new unsigned char [width*height*3];
+    
 	memset(m_ucPainting, 0, width*height*3);
+    memset(m_ucEdgeImage, 0, width*height*3);
+    memset(m_ucGrayscaleImage, 0, width*height*3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 

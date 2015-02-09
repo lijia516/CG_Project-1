@@ -47,6 +47,7 @@ private:
 			m_nWindowWidth, 
 			m_nWindowHeight;
     Point   lineAngleStartPoint;
+    
 
 };
 

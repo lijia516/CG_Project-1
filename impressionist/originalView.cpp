@@ -7,6 +7,7 @@
 #include "impressionist.h"
 #include "impressionistDoc.h"
 #include "originalView.h"
+#include <iostream>
 
 #ifndef WIN32
 #define min(a, b)	( ( (a)<(b) ) ? (a) : (b) )
@@ -21,6 +22,8 @@ OriginalView::OriginalView(int			x,
 {
 	m_nWindowWidth	= w;
 	m_nWindowHeight	= h;
+    m_ucShow = NULL;
+    m_ncOriginalView = 0;
 
 }
 
@@ -41,8 +44,29 @@ void OriginalView::draw()
 	}
 
 	glClear( GL_COLOR_BUFFER_BIT );
-
-	if ( m_pDoc->m_ucBitmap ) 
+    
+    switch (m_ncOriginalView) {
+            
+        case ORIGINAL_IMAGE:
+             m_ucShow = m_pDoc->m_ucBitmap;
+            break;
+            
+        case GRAYSCALE_IMAGE:
+            m_ucShow = m_pDoc->m_ucGrayscaleImage;
+            break;
+            
+        case DEGE_IMAGE:
+            m_ucShow = m_pDoc->m_ucEdgeImage;
+            break;
+            
+        default:
+            break;
+    }
+    
+    
+   
+    
+	if ( m_ucShow )
 	{
 		// note that both OpenGL pixel storage and the Windows BMP format
 		// store pixels left-to-right, BOTTOM-to-TOP!!  thus all the fiddling
@@ -66,7 +90,7 @@ void OriginalView::draw()
 			startrow = 0;
 
 
-		bitstart = m_pDoc->m_ucBitmap + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
+		bitstart = m_ucShow + 3 * ((m_pDoc->m_nWidth * startrow) + scrollpos.x);
 
 		// just copy image to GLwindow conceptually
 		glRasterPos2i( 0, m_nWindowHeight - drawHeight );
@@ -80,6 +104,12 @@ void OriginalView::draw()
 	glFlush();
 }
 
+
+void OriginalView::setOriginalView(int originalView) {
+    m_ncOriginalView = originalView;
+    std::cout << "m_ncOriginalView: " << m_ncOriginalView << "\n";
+}
+
 void OriginalView::refresh()
 {
 	redraw();
@@ -90,5 +120,6 @@ void OriginalView::resizeWindow(int	width,
 {
 	resize(x(), y(), width, height);
 }
+
 
 

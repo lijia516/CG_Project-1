@@ -17,6 +17,18 @@
 
 #include "impBrush.h"
 
+
+
+// Each filter type has an associated constant.
+enum
+{
+    ORIGINAL_IMAGE = 0,
+    GRAYSCALE_IMAGE = 1,
+    DEGE_IMAGE = 2,
+    NUM_IMAGE_TYPE// Make sure this stays at the end!
+};
+
+
 class ImpressionistDoc;
 
 class OriginalView : public Fl_Gl_Window
@@ -26,7 +38,7 @@ public:
 	
 	void draw();
 	void refresh();
-
+    void setOriginalView(int originalView);
 	void resizeWindow(int width, int height);
 
 	ImpressionistDoc*	m_pDoc;
@@ -34,6 +46,10 @@ public:
 private:
 	int	m_nWindowWidth, 
 		m_nWindowHeight;
+    int m_ncOriginalView;
+    
+    unsigned char*	m_ucShow;
+    
 
 };
 

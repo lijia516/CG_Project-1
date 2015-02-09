@@ -81,7 +81,7 @@ void PaintView::draw()
 	int startrow = m_pDoc->m_nPaintHeight - (scrollpos.y + drawHeight);
 	if ( startrow < 0 ) startrow = 0;
 
-	m_pPaintBitstart = m_pDoc->m_ucPainting + 
+	m_pPaintBitstart = m_pDoc->m_ucPainting +
 		3 * ((m_pDoc->m_nPaintWidth * startrow) + scrollpos.x);
 
 	m_nDrawWidth	= drawWidth;
@@ -92,13 +92,13 @@ void PaintView::draw()
 	m_nStartCol		= scrollpos.x;
 	m_nEndCol		= m_nStartCol + drawWidth;
 
-	if ( m_pDoc->m_ucPainting && !isAnEvent) 
+	if ( m_pDoc->m_ucPainting && !isAnEvent)
 	{
 		RestoreContent();
 
 	}
 
-	if ( m_pDoc->m_ucPainting && isAnEvent) 
+	if ( m_pDoc->m_ucPainting && isAnEvent)
 	{
 
 		// Clear it after processing.

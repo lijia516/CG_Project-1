@@ -67,8 +67,11 @@ public:
 	int				m_nPaintWidth, 
 					m_nPaintHeight;	
 	// Bitmaps for original image and painting.
+    
 	unsigned char*	m_ucBitmap;
 	unsigned char*	m_ucPainting;
+    unsigned char*	m_ucEdgeImage;
+    unsigned char*	m_ucGrayscaleImage;
 
 	// Used by the filtering code so that we can
 	// preview filters before applying.
