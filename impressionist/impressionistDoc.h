@@ -57,6 +57,7 @@ public:
     void	setLineAngle(int lineAngle);		// set the UI lineAngle
     
     bool		getMultiColor();						// get the UI multi color
+    bool		getEdgeClipping();						// get the UI edge clipping
     
 	char*	getImageName();					// get the current image name
     int     checkEdge(int targetX, int targetY);

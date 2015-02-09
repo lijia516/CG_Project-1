@@ -140,6 +140,14 @@ bool ImpressionistDoc::getMultiColor()
     return m_pUI->getMultiColor();
 }
 
+//---------------------------------------------------------
+// Returns the if edge clipping or not.
+//---------------------------------------------------------
+bool ImpressionistDoc::getEdgeClipping()
+{
+    return m_pUI->getEdgeClipping();
+}
+
 
 // set the width of the line brush.
 //---------------------------------------------------------

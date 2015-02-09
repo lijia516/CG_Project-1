@@ -107,6 +107,7 @@ public:
     double*             getKernelValues();
     
     bool                getMultiColor();
+    bool                getEdgeClipping();
 
 	// Callbacks for the image filter dialogue (different from
 	// the other callbacks because they aren't static)

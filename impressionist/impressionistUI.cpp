@@ -800,6 +800,14 @@ bool ImpressionistUI::getMultiColor()
 }
 
 //------------------------------------------------
+// Return the multi color
+//------------------------------------------------
+bool ImpressionistUI::getEdgeClipping()
+{
+    return m_nEdgeClipping;
+}
+
+//------------------------------------------------
 // Return the line brush width
 //------------------------------------------------
 int ImpressionistUI::getLineWidth()

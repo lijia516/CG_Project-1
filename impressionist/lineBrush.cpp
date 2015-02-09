@@ -43,12 +43,7 @@ void LineBrush::BrushMove( const Point source, const Point target )
     
         for (double i = half_lineWidth; i >= - half_lineWidth; i -= 0.5) {
             
-            if (0) {
-            
-                glVertex2d( target.x - size * cos(lineAngle) / 2 + i*cos(lineAngle + PI / 2), target.y - size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
-                glVertex2d( target.x + size * cos(lineAngle) / 2+ i*cos(lineAngle + PI / 2), target.y + size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
-                
-            } else {
+            if (pDoc->getEdgeClipping()) {
                 
                 int leftSize = 0;
                 for (; leftSize <= size / 2; leftSize++) {
@@ -70,6 +65,11 @@ void LineBrush::BrushMove( const Point source, const Point target )
                 
                 glVertex2d( target.x - leftSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y - leftSize * sin(lineAngle) + i* sin(lineAngle + PI / 2));
                 glVertex2d( target.x + rightSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y + rightSize * sin(lineAngle) + i* sin(lineAngle + PI / 2));
+                
+            } else {
+                
+                glVertex2d( target.x - size * cos(lineAngle) / 2 + i*cos(lineAngle + PI / 2), target.y - size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
+                glVertex2d( target.x + size * cos(lineAngle) / 2+ i*cos(lineAngle + PI / 2), target.y + size * sin(lineAngle) / 2 + i* sin(lineAngle + PI / 2));
             }
             
         }
