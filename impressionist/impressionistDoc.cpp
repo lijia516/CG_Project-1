@@ -22,6 +22,7 @@
 #include "scatpointBrush.h"
 #include "scatlineBrush.h"
 #include "scatcircleBrush.h"
+#include "triangleBrush.h"
 #include <math.h>
 
 
@@ -60,6 +61,8 @@ ImpressionistDoc::ImpressionistDoc()
 		= new ScatlineBrush( this, "Scattered Lines" );
 	ImpBrush::c_pBrushes[BRUSH_SCATTERED_CIRCLES]	
 		= new ScatcircleBrush( this, "Scattered Circles" );
+    ImpBrush::c_pBrushes[BRUSH_TRIANGLE]
+    = new TriangleBrush( this, "Triangle" );
 
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];

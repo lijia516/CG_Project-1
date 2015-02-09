@@ -21,7 +21,7 @@ CC = g++
 ALL.O = bitmap.o impBrush.o \
 	impressionist.o impressionistDoc.o impressionistUI.o \
 	originalView.o paintView.o pointBrush.o circleBrush.o lineBrush.o \
-	scatpointBrush.o scatcircleBrush.o scatlineBrush.o
+	scatpointBrush.o scatcircleBrush.o scatlineBrush.o triangleBrush.o
 
 impressionist: $(ALL.O)
 	$(CC) $(CFLAGS) -o $@ $(ALL.O) $(INCLUDE) $(LIBDIR) $(LIBS)

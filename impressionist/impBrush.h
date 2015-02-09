@@ -18,6 +18,7 @@ enum
 	BRUSH_SCATTERED_POINTS = 3,
 	BRUSH_SCATTERED_LINES = 4,
 	BRUSH_SCATTERED_CIRCLES = 5,
+    BRUSH_TRIANGLE = 6,
 	NUM_BRUSH_TYPE// Make sure this stays at the end!
 };
 
