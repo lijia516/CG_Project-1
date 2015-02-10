@@ -240,6 +240,21 @@ void ImpressionistUI::cb_clear_canvas(Fl_Menu_* o, void* v)
 	pDoc->clearCanvas();
 }
 
+
+
+//------------------------------------------------------------
+// Auto paint.
+// Called by the UI when the auto paint button is pushed
+//------------------------------------------------------------
+void ImpressionistUI::cb_auto_paint_button(Fl_Widget* o, void* v)
+{
+    ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+    
+    pDoc->autoPaint();
+    
+}
+
+
 //------------------------------------------------------------
 // Causes the Impressionist program to exit
 // Called by the UI when the quit menu item is chosen
@@ -538,30 +553,38 @@ void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
     if (m_npreviewNum == 0) {
         m_npreviewNum = 1;
          std::cout << "change buffer"<<"\n";
-        pDoc->m_ucPreviewBackup = pDoc->m_ucPainting;
+        pDoc->m_ucTempPointer = pDoc->m_ucPainting;
     }
     
     
     const unsigned char* sourceBuffer = pDoc->m_ucPainting;
     
+    std::cout << "get source buffer"<<"\n";
+    
     unsigned char* temp = new unsigned char [pDoc->m_nPaintWidth*pDoc->m_nPaintHeight*3];
     
     unsigned char* destBuffer = temp;
+    
+    std::cout << "get dest buffer"<<"\n";
     
     int srcBufferWidth = pDoc->m_nWidth;
     int srcBufferHeight = pDoc->m_nHeight;
     
     const double *filterKernel = pDoc->m_pUI->getKernelValues();
     
+    std::cout << "get kernel"<<"\n";
+    
     int m_scale = pDoc->m_pUI->scale;
     int m_offset = pDoc->m_pUI->offset;
     int m_KernelWidth = pDoc->m_pUI->m_nKernelWidth;
     int m_KernelHeight = pDoc->m_pUI->m_nKernelHeight;
     
-    std::cout << "before apply func"<<"\n";
+    std::cout << m_scale<<","<< m_offset<<","<< m_KernelWidth<<","<< m_KernelHeight<<"\n";
+    
     pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, m_scale, m_offset);
     
-    pDoc->m_ucPreviewBackup2 = pDoc->m_ucPainting;
+    std::cout << "after apply"<<"\n";
+    
     pDoc->m_ucPainting = temp;
     pDoc->m_pUI->m_paintView->refresh();
 }
@@ -579,6 +602,7 @@ void ImpressionistUI::static_cb_apply_filter_button(Fl_Widget* o, void* v)
 void ImpressionistUI::cb_apply_filter_button(Fl_Widget* o, void* v)
 {
     ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+    pDoc->m_ucTempPointer = pDoc->m_ucPainting;
     m_npreviewNum = 0;
     m_paintView->refresh();
 }
@@ -597,7 +621,7 @@ void ImpressionistUI::cb_cancle_filter_button(Fl_Widget* o, void* v)
 {
     
     ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
-    pDoc->m_ucPainting = pDoc->m_ucPreviewBackup;
+    pDoc->m_ucPainting = pDoc->m_ucTempPointer;
     m_paintView->refresh();
     
     m_npreviewNum = 0;
@@ -1117,10 +1141,14 @@ ImpressionistUI::ImpressionistUI() {
         m_BrushLineAngleSlider->callback(cb_lineAngleSlides);
         m_BrushLineAngleSlider->deactivate();
     
+    // Add auto paint
+    m_AutoPaintButton = new Fl_Button(10,200,100,25,"&Auto Paint");
+    m_AutoPaintButton->user_data((void*)(this));
+    m_AutoPaintButton->callback(cb_auto_paint_button);
     
     
 
-    m_brushDialog->end();	
+    m_brushDialog->end();
 
 }
 

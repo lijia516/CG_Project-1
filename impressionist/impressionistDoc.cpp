@@ -41,6 +41,9 @@ ImpressionistDoc::ImpressionistDoc()
     m_ucGrayscaleImage   = NULL;
 	m_ucPreviewBackup = NULL;
     m_ucPreviewBackup2 = NULL;
+    m_ucEdgeImageBackup = NULL;
+    m_ucEdgeImageBackup2 = NULL;
+    m_ucTempPointer = NULL;
     
     hasEdgeImage = false;
     hasGrayscaleImage = false;
@@ -176,14 +179,14 @@ void ImpressionistDoc::setLineAngle(int lineAngle)
 //----------------------------------------------------------
 void ImpressionistDoc::getEdgeImage(){
     
-    
     // grayscale
     const unsigned char* sourceBuffer = m_ucBitmap;
     int srcBufferWidth = m_nWidth;
     int srcBufferHeight = m_nHeight;
-    unsigned char* destBuffer = m_ucPreviewBackup;
-    
+    unsigned char* destBuffer = m_ucEdgeImageBackup;
+    std::cout<<"before grascale"<<"\n";
     grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
+    
     
     // blurring
     double fltKernel[9] = {1,2,1,2,3,2,1,2,1};
@@ -191,19 +194,18 @@ void ImpressionistDoc::getEdgeImage(){
     
     int m_KernelWidth = 3;
     int m_KernelHeight = 3;
-    
-    sourceBuffer = m_ucPreviewBackup;
-    destBuffer = m_ucPreviewBackup2;
-    
+    sourceBuffer = m_ucEdgeImageBackup;
+    destBuffer = m_ucEdgeImageBackup2;
+    std::cout<<"applyFilter"<<"\n";
     applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, 1, 0);
     
     double sobelEdgeDetectKnl1[9] = {1,2,1,0,0,0,-1,-2,-1};
     double sobelEdgeDetectKnl2[9] = {1,0,-1,2,0,-2,1,0,-1};
     
-    
     // edge detection
-    sourceBuffer = m_ucPreviewBackup2;
+    sourceBuffer = m_ucEdgeImageBackup2;
     destBuffer = m_ucEdgeImage;
+    std::cout<<"edgeDetective"<<"\n";
     edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
 }
 
@@ -243,23 +245,39 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_nPaintWidth	= width;
 	m_nHeight		= height;
 	m_nPaintHeight	= height;
+    
+    std::cout << "w, h: " << width <<","<<height<<"\n";
 
 	// release old storage
-	delete [] m_ucBitmap;
-	delete [] m_ucPainting;
+    
+   // if (m_ucBitmap)         delete [] m_ucBitmap;
+   // if (m_ucPainting)       delete [] m_ucPainting;
+   // if (m_ucEdgeImage)      delete [] m_ucEdgeImage;
+   // if (m_ucGrayscaleImage) delete [] m_ucGrayscaleImage;
+   // if (m_ucPreviewBackup)  delete [] m_ucPreviewBackup;
+   // if (m_ucPreviewBackup2) delete [] m_ucPreviewBackup2;
+    
+    
+    delete [] m_ucBitmap;
+    delete [] m_ucPainting;
     delete [] m_ucEdgeImage;
     delete [] m_ucGrayscaleImage;
-	delete [] m_ucPreviewBackup;
+    delete [] m_ucPreviewBackup;
     delete [] m_ucPreviewBackup2;
+    delete [] m_ucEdgeImageBackup;
+    delete [] m_ucEdgeImageBackup2;
     
+    m_ucTempPointer = NULL;
 	m_ucBitmap		= data;
 
 	// allocate space for draw view
-	m_ucPainting		= new unsigned char [width*height*3];
-    m_ucEdgeImage		= new unsigned char [width*height*3];
-    m_ucGrayscaleImage	= new unsigned char [width*height*3];
-	m_ucPreviewBackup	= new unsigned char [width*height*3];
-    m_ucPreviewBackup2	= new unsigned char [width*height*3];
+	m_ucPainting            = new unsigned char [width*height*3];
+    m_ucEdgeImage           = new unsigned char [width*height*3];
+    m_ucGrayscaleImage      = new unsigned char [width*height*3];
+	m_ucPreviewBackup       = new unsigned char [width*height*3];
+    m_ucPreviewBackup2      = new unsigned char [width*height*3];
+    m_ucEdgeImageBackup     = new unsigned char [width*height*3];
+    m_ucEdgeImageBackup2	= new unsigned char [width*height*3];
     
     hasEdgeImage = false;
     hasGrayscaleImage = false;
@@ -267,13 +285,17 @@ int ImpressionistDoc::loadImage(char *iname)
 	memset(m_ucPainting, 0, width*height*3);
     memset(m_ucEdgeImage, 0, width*height*3);
     memset(m_ucGrayscaleImage, 0, width*height*3);
+    memset(m_ucPreviewBackup, 0, width*height*3);
+    memset(m_ucPreviewBackup2, 0, width*height*3);
 
 	m_pUI->m_mainWindow->resize(m_pUI->m_mainWindow->x(), 
 								m_pUI->m_mainWindow->y(), 
 								width*2, 
 								height+25);
 
-	// display it on origView
+
+    // display it on origView
+    m_pUI->m_origView->setOriginalView(0);
 	m_pUI->m_origView->resizeWindow(width, height);	
 	m_pUI->m_origView->refresh();
 
@@ -385,6 +407,7 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
            //     std::cout << nRow << "," << nCol << "\n";
                 
                 if (nRow < 0 || nCol < 0) continue;
+                if (nRow >= srcBufferHeight || nCol >= srcBufferWidth) continue;
                 
                 sumColor[0] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') * filterKernel[i];
                 
@@ -476,6 +499,7 @@ void ImpressionistDoc::edgeDetector( const unsigned char* sourceBuffer,
                 int nCol = i % knlWidth + (col - knlCenterCol);
                 
                 if (nRow < 0 || nCol < 0) continue;
+                if (nRow >= srcBufferHeight || nCol >= srcBufferWidth) continue;
                 
                 sumColor[0] += 3 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') * filterKernel1[i];
                 sumColor[1] += 3 * (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') * filterKernel2[i];
@@ -573,6 +597,54 @@ int ImpressionistDoc::checkEdge(int targetX, int targetY)
     
     return 0;
 }
+
+//----------------------------------------------------------------
+// Auto Paint
+// This is called by the UI when the auto paint menu item is
+// chosen
+//-----------------------------------------------------------------
+int ImpressionistDoc::autoPaint()
+{
+    
+    // Release old storage
+    if ( m_ucPainting )
+    {
+        delete [] m_ucPainting;
+    }
+    
+    // allocate space for draw view
+    m_ucPainting	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
+    memset(m_ucPainting, 0, m_nPaintWidth*m_nPaintHeight*3);
+    
+    
+    for (int i = 0; i < m_nPaintWidth; i = i+5) {
+        for (int j = 0; j < m_nPaintHeight; j = j+5) {
+            
+            Point p(i, j);
+            m_pCurrentBrush->BrushBegin(p,p);
+            
+            std::cout<<"i, j" << i << ","<<j <<"\n";
+            
+            m_pUI->m_paintView->SaveCurrentContent();
+            m_pUI->m_paintView->refresh();
+            
+        }
+    }
+    glFlush();
+    std::cout<<"m_nPaintWidth, m_nPaintHeight" << m_nPaintWidth << ","<<m_nPaintHeight <<"\n";
+    
+#ifndef MESA
+    // To avoid flicker on some machines.
+    glDrawBuffer(GL_BACK);
+#endif // !MESA
+    
+    // refresh paint view as well
+   
+    
+    return 0;
+}
+
+
 
 
 /*

@@ -45,10 +45,10 @@ PaintView::PaintView(int			x,
 
 void PaintView::draw()
 {
-	#ifndef MESA
+//	#ifndef MESA
 	// To avoid flicker on some machines.
   //	glDrawBuffer(GL_FRONT_AND_BACK);
-	#endif // !MESA
+//	#endif // !MESA
 
 	if(!valid())
 	{
@@ -244,7 +244,8 @@ void PaintView::SaveCurrentContent()
 {
 	// Tell openGL to read from the front buffer when capturing
 	// out paint strokes
-	glReadBuffer(GL_FRONT);
+    glReadBuffer(GL_BACK);
+     // glReadBuffer(GL_FRONT);
 
 	glPixelStorei( GL_PACK_ALIGNMENT, 1 );
 	glPixelStorei( GL_PACK_ROW_LENGTH, m_pDoc->m_nPaintWidth );

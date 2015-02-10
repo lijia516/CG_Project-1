@@ -25,6 +25,7 @@ public:
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
+    int     autoPaint();                  //  called by the UI to auto paint
 
 	void applyFilter( const unsigned char* sourceBuffer, //The filter kernel
 		int srcBufferWidth, int srcBufferHeight,
@@ -87,14 +88,15 @@ public:
 
 	// Used by the filtering code so that we can
 	// preview filters before applying.
+    unsigned char*	m_ucEdgeImageBackup;
+    unsigned char*	m_ucEdgeImageBackup2;
 	unsigned char*	m_ucPreviewBackup;
     unsigned char*	m_ucPreviewBackup2;
-
+    unsigned char*  m_ucTempPointer;
     
     //if the images have generated
     bool hasEdgeImage;
     bool hasGrayscaleImage;
-    
     
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;

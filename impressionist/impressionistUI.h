@@ -77,6 +77,7 @@ public:
     Fl_Float_Input*     m_KernelOffsetInput;
     
 	Fl_Button*          m_ClearCanvasButton;
+    Fl_Button*          m_AutoPaintButton;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -162,6 +163,7 @@ private:
 	static void	cb_brushChoice(Fl_Widget* o, void* v);
     static void	cb_lineAngleChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
+    static void cb_auto_paint_button(Fl_Widget* o, void* v);
     
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
     static void	cb_alphaSlides(Fl_Widget* o, void* v);
