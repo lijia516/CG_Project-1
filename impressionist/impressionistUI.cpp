@@ -686,8 +686,20 @@ void ImpressionistUI::cb_sizeSlides(Fl_Widget* o, void* v)
 }
 
 
+
 //-----------------------------------------------------------
 // Updates the brush size to use from the value of the size
+// slider
+// Called by the UI when the size slider is moved
+//-----------------------------------------------------------
+void ImpressionistUI::cb_drawSpaceSlides(Fl_Widget* o, void* v)
+{
+    ((ImpressionistUI*)(o->user_data()))->m_nDrawSpace=int( ((Fl_Slider *)o)->value() ) ;
+}
+
+
+//-----------------------------------------------------------
+// Updates the brush alpha value to use from the value of the alpha
 // slider
 // Called by the UI when the size slider is moved
 //-----------------------------------------------------------
@@ -750,7 +762,7 @@ void ImpressionistUI::cb_edgeClippingLightButton(Fl_Widget* o, void* v)
 
 
 //-----------------------------------------------------------
-// Updates the edge clipping status from the edge clipping
+// Updates the multicolor status from the edge clipping
 // light button
 // Called by the UI when the line width edge clipping light button is pressed
 //-----------------------------------------------------------
@@ -768,6 +780,28 @@ void ImpressionistUI::cb_multiColorLightButton(Fl_Widget* o, void* v)
         
     }
 }
+
+
+//-----------------------------------------------------------
+// Updates the rand space status from the edge clipping
+// light button
+// Called by the UI when the line width edge clipping light button is pressed
+//-----------------------------------------------------------
+void ImpressionistUI::cb_randSpaceLightButton(Fl_Widget* o, void* v)
+{
+    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    
+    if (pUI->m_nRandSpace==TRUE) pUI->m_nRandSpace=FALSE;
+    
+    else {
+        
+        pUI->m_nRandSpace=TRUE;
+        
+    }
+}
+
 
 //---------------------------------- per instance functions --------------------------------------
 
@@ -830,6 +864,26 @@ void ImpressionistUI::setSize( int size )
 
 
 //------------------------------------------------
+// Return the brush size
+//------------------------------------------------
+int ImpressionistUI::getDrawSpace()
+{
+    return m_nDrawSpace;
+}
+
+//-------------------------------------------------
+// Set the brush size
+//-------------------------------------------------
+void ImpressionistUI::setDrawSpace( int drawSpace )
+{
+    m_nDrawSpace=drawSpace;
+    
+    if (drawSpace<=20 && drawSpace > 0)
+        m_DrawSpaceSlider->value(m_nDrawSpace);
+}
+
+
+//------------------------------------------------
 // Return the brush alpha
 //------------------------------------------------
 float ImpressionistUI::getAlpha()
@@ -855,6 +909,15 @@ void ImpressionistUI::setAlpha( float alpha )
 bool ImpressionistUI::getMultiColor()
 {
     return m_nMultiColor;
+}
+
+
+//------------------------------------------------
+// Return the random space
+//------------------------------------------------
+bool ImpressionistUI::getRandSpace()
+{
+    return m_nRandSpace;
 }
 
 //------------------------------------------------
@@ -1085,6 +1148,7 @@ ImpressionistUI::ImpressionistUI() {
     m_nAlpha = 1.0;
     m_nLineWidth = 5;
     m_nLineAngle = 45;
+    m_nDrawSpace = 5;
     
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
@@ -1114,7 +1178,7 @@ ImpressionistUI::ImpressionistUI() {
         m_MultiColorLightButton->deactivate();
     
         // Add ddge clipping button
-        m_EdgeClippingLightButton = new Fl_Light_Button(50,250,150,25,"&Edge Clipping");
+        m_EdgeClippingLightButton = new Fl_Light_Button(10,180,130,25,"&Edge Clipping");
         m_EdgeClippingLightButton->user_data((void*)(this));   // record self to be used by static callback functions
         m_EdgeClippingLightButton->callback(cb_edgeClippingLightButton);
     
@@ -1175,10 +1239,33 @@ ImpressionistUI::ImpressionistUI() {
         m_BrushLineAngleSlider->callback(cb_lineAngleSlides);
         m_BrushLineAngleSlider->deactivate();
     
-    // Add auto paint
-    m_AutoPaintButton = new Fl_Button(10,200,100,25,"&Auto Paint");
-    m_AutoPaintButton->user_data((void*)(this));
-    m_AutoPaintButton->callback(cb_auto_paint_button);
+        // Add auto paint
+        m_AutoPaintButton = new Fl_Button(305,230,80,25,"&Auto Paint");
+        m_AutoPaintButton->user_data((void*)(this));
+        m_AutoPaintButton->callback(cb_auto_paint_button);
+    
+    
+    
+        // Add random space button to control the color source of scatted brush
+        m_RandSpaceLightButton = new Fl_Light_Button(205,230,95,25,"&RandSpace");
+        m_RandSpaceLightButton->user_data((void*)(this));   // record self to be used by static callback functions
+        m_RandSpaceLightButton->callback(cb_randSpaceLightButton);
+    
+    
+    
+        // Add spacing slider to the dialog
+        m_DrawSpaceSlider = new Fl_Value_Slider(10, 230, 150, 20, "draw\nspace");
+        m_DrawSpaceSlider->user_data((void*)(this));	// record self to be used by static callback functions
+        m_DrawSpaceSlider->type(FL_HOR_NICE_SLIDER);
+        m_DrawSpaceSlider->labelfont(FL_COURIER);
+        m_DrawSpaceSlider->labelsize(12);
+        m_DrawSpaceSlider->minimum(1);
+        m_DrawSpaceSlider->maximum(20);
+        m_DrawSpaceSlider->step(1);
+        m_DrawSpaceSlider->value(m_nDrawSpace);
+        m_DrawSpaceSlider->align(FL_ALIGN_RIGHT);
+        m_DrawSpaceSlider->callback(cb_drawSpaceSlides);
+        m_DrawSpaceSlider->activate();
     
     
 

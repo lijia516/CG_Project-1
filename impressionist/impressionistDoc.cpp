@@ -29,6 +29,10 @@
 
 #define DESTROY(p)	{  if ((p)!=NULL) {delete [] p; p=NULL; } }
 
+
+extern float frand();
+
+
 ImpressionistDoc::ImpressionistDoc() 
 {
 	// Set NULL image name as init. 
@@ -616,27 +620,35 @@ int ImpressionistDoc::autoPaint()
     m_ucPainting	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
     memset(m_ucPainting, 0, m_nPaintWidth*m_nPaintHeight*3);
     
+    int drawSpace = m_pUI->getDrawSpace();
+    int gap = drawSpace;
     
-    for (int i = 0; i < m_nPaintWidth; i = i+5) {
-        for (int j = 0; j < m_nPaintHeight; j = j+5) {
+    for (int i = 0; i < m_nPaintWidth; i = i+gap) {
+        for (int j = 0; j < m_nPaintHeight; j = j+ gap) {
+            
+            
+            if (m_pUI->getRandSpace()) gap = frand()*drawSpace;
+            
             
             Point p(i, j);
             m_pCurrentBrush->BrushBegin(p,p);
             
             std::cout<<"i, j" << i << ","<<j <<"\n";
             
+            glFlush();
             m_pUI->m_paintView->SaveCurrentContent();
-            m_pUI->m_paintView->refresh();
             
         }
+        
+         m_pUI->m_paintView->refresh();
     }
     glFlush();
     std::cout<<"m_nPaintWidth, m_nPaintHeight" << m_nPaintWidth << ","<<m_nPaintHeight <<"\n";
     
-#ifndef MESA
+    #ifndef MESA
     // To avoid flicker on some machines.
     glDrawBuffer(GL_BACK);
-#endif // !MESA
+    #endif // !MESA
     
     // refresh paint view as well
    

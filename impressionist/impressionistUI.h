@@ -59,9 +59,11 @@ public:
     Fl_Slider*			m_BrushAlphaSlider;
 	Fl_Slider*			m_BrushLineWidthSlider;
     Fl_Slider*			m_BrushLineAngleSlider;
+    Fl_Slider*			m_DrawSpaceSlider;
     
     Fl_Light_Button*    m_EdgeClippingLightButton;
     Fl_Light_Button*    m_MultiColorLightButton;
+    Fl_Light_Button*    m_RandSpaceLightButton;
     
 // for apply filter dialog
     Fl_Window*			m_applyFilterDialog;
@@ -91,6 +93,9 @@ public:
 	int					getSize();
 	void				setSize(int size);
     
+    int					getDrawSpace();
+    void				setDrawSpace(int drawSpace);
+    
     float				getAlpha();
     void				setAlpha(float alpha);
     
@@ -109,6 +114,7 @@ public:
     
     bool                getMultiColor();
     bool                getEdgeClipping();
+    bool                getRandSpace();
 
 	// Callbacks for the image filter dialogue (different from
 	// the other callbacks because they aren't static)
@@ -127,12 +133,14 @@ private:
 
 	// All attributes here
 	int		m_nSize;
+    int		m_nDrawSpace;
     float	m_nAlpha;
     int		m_nLineWidth;
     int		m_nLineAngle;
     int     m_nLineAngleType;
     bool    m_nEdgeClipping;
     bool    m_nMultiColor;
+    bool    m_nRandSpace;
 
 	// These attributes are set by the filter kernel UI
 	double fltKernel[FLT_WIDTH*FLT_HEIGHT];		//the kernel of the image filter
@@ -166,6 +174,7 @@ private:
     static void cb_auto_paint_button(Fl_Widget* o, void* v);
     
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
+    static void	cb_drawSpaceSlides(Fl_Widget* o, void* v);
     static void	cb_alphaSlides(Fl_Widget* o, void* v);
     static void	cb_lineWidthSlides(Fl_Widget* o, void* v);
     static void	cb_lineAngleSlides(Fl_Widget* o, void* v);
@@ -192,6 +201,7 @@ private:
     static void cb_view_original_image(Fl_Menu_* o, void* v);
     static void cb_edgeClippingLightButton(Fl_Widget* o, void* v);
     static void cb_multiColorLightButton(Fl_Widget* o, void* v);
+    static void cb_randSpaceLightButton(Fl_Widget* o, void* v);
 
 };
 
