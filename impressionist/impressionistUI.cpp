@@ -460,7 +460,35 @@ void ImpressionistUI::cb_filterChoice(Fl_Widget* o, void* v)
             
         case GAUSSIAN_FILTER:
             
-            ///////////////////////
+            pUI->m_KernelValues[0]->value("1");
+            pUI->m_KernelValues[1]->value("4");
+            pUI->m_KernelValues[2]->value("7");
+            pUI->m_KernelValues[3]->value("4");
+            pUI->m_KernelValues[4]->value("1");
+            
+            pUI->m_KernelValues[5]->value("4");
+            pUI->m_KernelValues[6]->value("16");
+            pUI->m_KernelValues[7]->value("26");
+            pUI->m_KernelValues[8]->value("16");
+            pUI->m_KernelValues[9]->value("4");
+            
+            pUI->m_KernelValues[10]->value("7");
+            pUI->m_KernelValues[11]->value("26");
+            pUI->m_KernelValues[12]->value("41");
+            pUI->m_KernelValues[13]->value("26");
+            pUI->m_KernelValues[14]->value("7");
+            
+            pUI->m_KernelValues[15]->value("4");
+            pUI->m_KernelValues[16]->value("16");
+            pUI->m_KernelValues[17]->value("26");
+            pUI->m_KernelValues[18]->value("16");
+            pUI->m_KernelValues[19]->value("4");
+            
+            pUI->m_KernelValues[20]->value("1");
+            pUI->m_KernelValues[21]->value("4");
+            pUI->m_KernelValues[22]->value("7");
+            pUI->m_KernelValues[23]->value("4");
+            pUI->m_KernelValues[24]->value("1");
             
             break;
             
