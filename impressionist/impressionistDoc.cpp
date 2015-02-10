@@ -607,6 +607,175 @@ int ImpressionistDoc::checkEdge(int targetX, int targetY)
 // This is called by the UI when the auto paint menu item is
 // chosen
 //-----------------------------------------------------------------
+int ImpressionistDoc::coarseToFinePainting()
+{
+    
+    // Release old storage
+    if ( m_ucPainting )
+    {
+        delete [] m_ucPainting;
+    }
+    
+    // allocate space for draw view
+    m_ucPainting	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
+    memset(m_ucPainting, 0, m_nPaintWidth*m_nPaintHeight*3);
+    
+    
+    
+    int count = 0;
+    
+    int drawSpace = m_pUI->getDrawSpace();
+    int gap = drawSpace;
+    int brushSize = getSize();
+    
+    GLubyte colorOrigin[3];
+    int colorNew[3];
+    
+    int maxDiff = 101;
+    while (count < 5 && maxDiff > 100) {
+    
+         std::cout<<"count, maxDiff: " << count << ","<<maxDiff <<"\n";
+        
+    for (int i = 0; i < m_nPaintWidth; i = i+gap) {
+        for (int j = 0; j < m_nPaintHeight; j = j+ gap) {
+            
+            Point p(i, j);
+            
+            memcpy ( colorOrigin, GetOriginalPixel( p ), 3 );
+            
+            colorNew[0] =  m_ucPainting[3*(i*m_nWidth+j)+0];
+            colorNew[1] =  m_ucPainting[3*(i*m_nWidth+j)+1];
+            colorNew[2] =  m_ucPainting[3*(i*m_nWidth+j)+2];
+    
+            
+            double diff = (abs(colorNew[0]-colorOrigin[0]) + abs(colorNew[1]-colorOrigin[1]) + abs(colorNew[2]-colorOrigin[2]))/3;
+            
+           if (diff > 10) {
+            m_pCurrentBrush->BrushBegin(p,p);
+            
+               if (diff > maxDiff) maxDiff = diff;
+           }
+            
+            glFlush();
+            m_pUI->m_paintView->SaveCurrentContent();
+               
+            
+        }
+        
+         m_pUI->m_paintView->refresh();
+    }
+    glFlush();
+    
+    #ifndef MESA
+    // To avoid flicker on some machines.
+    glDrawBuffer(GL_BACK);
+    #endif // !MESA
+    
+    m_pUI->m_paintView->refresh();
+        
+    // refresh paint view as well
+   
+        count++;
+        brushSize = brushSize / 3 + 3;
+        setSize(brushSize);
+        
+        gap = gap/3+2;
+        
+        m_pUI->setDrawSpace(gap);
+        
+    }
+    return 0;
+}
+
+
+/*
+
+//----------------------------------------------------------------
+// Auto Paint
+// This is called by the UI when the auto paint menu item is
+// chosen
+//-----------------------------------------------------------------
+int ImpressionistDoc::autoPaint()
+{
+    
+    // Release old storage
+    if ( m_ucPainting )
+    {
+        delete [] m_ucPainting;
+    }
+    
+    // allocate space for draw view
+    m_ucPainting	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
+    memset(m_ucPainting, 0, m_nPaintWidth*m_nPaintHeight*3);
+    
+    int size = 30;
+    int sum = 1;
+    int same = 0;
+    GLubyte color[3];
+    int colorOrigin[3];
+    int colorNew[3];
+    
+    double percent = 0.1;
+    
+    while (size > 2) {
+    
+        std::cout<<"size: " << size <<"\n";
+
+        
+        for (int i = 0; i < m_nPaintHeight; i = i+ 2) {
+        for (int j = 0; j < m_nPaintWidth; j = j+ 2) {
+            
+           // std::cout<<"i, j" << i << ","<<j <<"\n";
+            
+            Point p(i, j);
+            memcpy ( color, GetOriginalPixel( p ), 3 );
+            
+            
+            colorOrigin[0] =  m_ucBitmap[3*(i*m_nWidth+j)+0] - '0';
+            colorOrigin[1] =  m_ucBitmap[3*(i*m_nWidth+j)+1] - '0';
+            colorOrigin[2] =  m_ucBitmap[3*(i*m_nWidth+j)+2] - '0';
+            
+            colorNew[0] =  color[0] - '0';
+            colorNew[1] =  color[1] - '0';
+            colorNew[2] =  color[2] - '0';
+            
+            int diff = sqrt((colorNew[0]-colorOrigin[0])^2 + (colorNew[1]-colorOrigin[1])^2 + (colorNew[2]-colorOrigin[2])^2);
+            
+            if (diff > 10) {
+            
+                setSize(size);
+                m_pCurrentBrush->BrushBegin(p,p);
+                glFlush();
+                m_pUI->m_paintView->SaveCurrentContent();
+            }
+            
+            }
+        
+            m_pUI->m_paintView->refresh();
+        }
+        glFlush();
+        std::cout<<"m_nPaintWidth, m_nPaintHeight" << m_nPaintWidth << ","<<m_nPaintHeight <<"\n";
+    
+        #ifndef MESA
+        // To avoid flicker on some machines.
+        glDrawBuffer(GL_BACK);
+        #endif // !MESA
+    
+        // refresh paint view as well
+    
+        size = size / 2;
+        
+    }
+    
+    return 0;
+}
+
+*/
+//----------------------------------------------------------------
+// Auto Paint
+// This is called by the UI when the auto paint menu item is
+// chosen
+//-----------------------------------------------------------------
 int ImpressionistDoc::autoPaint()
 {
     
@@ -640,54 +809,20 @@ int ImpressionistDoc::autoPaint()
             
         }
         
-         m_pUI->m_paintView->refresh();
+        m_pUI->m_paintView->refresh();
     }
     glFlush();
     std::cout<<"m_nPaintWidth, m_nPaintHeight" << m_nPaintWidth << ","<<m_nPaintHeight <<"\n";
     
-    #ifndef MESA
+#ifndef MESA
     // To avoid flicker on some machines.
     glDrawBuffer(GL_BACK);
-    #endif // !MESA
+#endif // !MESA
     
     // refresh paint view as well
-   
+    
     
     return 0;
 }
-
-
-
-
-/*
-int ImpressionistDoc::previewPaintView(unsigned char* previewBackup){
-    
-    // note that both OpenGL pixel storage and the Windows BMP format
-    // store pixels left-to-right, BOTTOM-to-TOP!!  thus all the fiddling
-    // around with startrow.
-    glDrawBuffer(GL_BACK);
-    std::cout<<"hello prevoewPaintView func" <<"\n";
-    
-    Point scrollpos;// = GetScrollPosition();
-    scrollpos.x = 0;
-    scrollpos.y	= 0;
-    
-    int drawWidth, drawHeight;
-    drawWidth = fmin( m_pUI->m_paintView->getWindowWidth(), m_nPaintWidth );
-    drawHeight = fmin( m_pUI->m_paintView->getWindowHeight(), m_nPaintHeight );
-    
-    int startrow = m_nPaintHeight - (scrollpos.y + drawHeight);
-    if ( startrow < 0 ) startrow = 0;
-   
-    GLvoid* bitstart;
-    bitstart = previewBackup + 3 * ((m_nPaintWidth * startrow) + scrollpos.x);
-    
-    m_pUI->m_paintView->setPaintBitstart(bitstart);
-    m_pUI->m_paintView->SaveCurrentContent();
-    glFlush();
-    m_pUI->m_paintView->refresh();
-    
-}
- */
 
 

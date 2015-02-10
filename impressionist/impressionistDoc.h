@@ -27,6 +27,8 @@ public:
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
     int     autoPaint();                  //  called by the UI to auto paint
 
+    int     coarseToFinePainting();
+    
 	void applyFilter( const unsigned char* sourceBuffer, //The filter kernel
 		int srcBufferWidth, int srcBufferHeight,
 		unsigned char* destBuffer,

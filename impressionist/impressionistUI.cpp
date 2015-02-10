@@ -256,6 +256,19 @@ void ImpressionistUI::cb_auto_paint_button(Fl_Widget* o, void* v)
 
 
 //------------------------------------------------------------
+// Auto paint.
+// Called by the UI when the auto paint button is pushed
+//------------------------------------------------------------
+void ImpressionistUI::cb_coarse_to_fine_paint_button(Fl_Widget* o, void* v)
+{
+    ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+    
+    pDoc->coarseToFinePainting();
+    
+}
+
+
+//------------------------------------------------------------
 // Causes the Impressionist program to exit
 // Called by the UI when the quit menu item is chosen
 //------------------------------------------------------------
@@ -1267,6 +1280,11 @@ ImpressionistUI::ImpressionistUI() {
         m_DrawSpaceSlider->callback(cb_drawSpaceSlides);
         m_DrawSpaceSlider->activate();
     
+    
+        // Add auto paint
+        m_CoarseToFinePaintButton = new Fl_Button(100,280,150,25,"&CoarseToFine Paint");
+        m_CoarseToFinePaintButton->user_data((void*)(this));
+        m_CoarseToFinePaintButton->callback(cb_coarse_to_fine_paint_button);
     
 
     m_brushDialog->end();

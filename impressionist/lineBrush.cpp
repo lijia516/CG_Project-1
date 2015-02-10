@@ -61,7 +61,7 @@ void LineBrush::BrushMove( const Point source, const Point target )
                 
                 rightSize = rightSize > size / 2 ? size / 2 : rightSize;
                 
-                std::cout<<"leftSize, rightSize: "<<leftSize<<","<<rightSize<<","<<"\n";
+              //  std::cout<<"leftSize, rightSize: "<<leftSize<<","<<rightSize<<","<<"\n";
                 
                 glVertex2d( target.x - leftSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y - leftSize * sin(lineAngle) + i* sin(lineAngle + PI / 2));
                 glVertex2d( target.x + rightSize * cos(lineAngle) + i*cos(lineAngle + PI / 2), target.y + rightSize * sin(lineAngle) + i* sin(lineAngle + PI / 2));

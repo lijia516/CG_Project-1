@@ -80,6 +80,7 @@ public:
     
 	Fl_Button*          m_ClearCanvasButton;
     Fl_Button*          m_AutoPaintButton;
+    Fl_Button*          m_CoarseToFinePaintButton;
 
 	// Member functions
 	void				setDocument(ImpressionistDoc* doc);
@@ -172,6 +173,7 @@ private:
     static void	cb_lineAngleChoice(Fl_Widget* o, void* v);
 	static void	cb_clear_canvas_button(Fl_Widget* o, void* v);
     static void cb_auto_paint_button(Fl_Widget* o, void* v);
+    static void cb_coarse_to_fine_paint_button(Fl_Widget* o, void* v);
     
 	static void	cb_sizeSlides(Fl_Widget* o, void* v);
     static void	cb_drawSpaceSlides(Fl_Widget* o, void* v);
