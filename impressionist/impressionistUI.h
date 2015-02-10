@@ -70,7 +70,7 @@ public:
     Fl_Button*          m_CancleFilterButton;
     Fl_Int_Input*       m_KernelWidthInput;
     Fl_Int_Input*       m_KernelHeightInput;
-    Fl_Float_Input*     m_KernelValues[9];
+    Fl_Float_Input*     m_KernelValues[FLT_WIDTH * FLT_HEIGHT];
     Fl_Choice*			m_FilterTypeChoice;
     
     Fl_Float_Input*     m_KernelScaleInput;

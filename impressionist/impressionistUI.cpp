@@ -224,8 +224,8 @@ void ImpressionistUI::cb_applyFilter(Fl_Menu_* o, void* v)
     m_npreviewNum = 0;
     whoami(o)->scale = 1;
     whoami(o)->offset = 0;
-    whoami(o)->m_nKernelWidth = 3;
-    whoami(o)->m_nKernelHeight = 3;
+    whoami(o)->m_nKernelWidth = 5;
+    whoami(o)->m_nKernelHeight = 5;
 }
 
 
@@ -430,7 +430,7 @@ void ImpressionistUI::cb_filterChoice(Fl_Widget* o, void* v)
             
         case BOX_FILTER:
             
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < FLT_WIDTH * FLT_HEIGHT; i++) {
                 
                     pUI->m_KernelValues[i] -> value("1");
             
@@ -441,14 +441,17 @@ void ImpressionistUI::cb_filterChoice(Fl_Widget* o, void* v)
             
         case BARTLETT_FILTER:
             
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3; j++) {
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
                     
-                    int temp = 3 - abs(i-1)-abs(j-1);
+                    int temp = 5 - abs(i-2)-abs(j-2);
+                    
+                    if (temp < 0) temp = 0;
+                    
                     char* c = new char[1];
                     c[0] = temp+'0';
                     
-                    pUI->m_KernelValues[i*3+j]->value(c);
+                    pUI->m_KernelValues[i*5+j]->value(c);
                 }
             }
             
@@ -527,12 +530,15 @@ int ImpressionistUI::getKernelOffset()
 double* ImpressionistUI::getKernelValues()
 {
     
-    double* values = new double[3 * 3];
+    double* values = new double[5 * 5];
     
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 25; i++) {
             
             values[i] = (double) atoi( m_KernelValues[i] -> value());
+        std::cout << values[i] <<",";
+        
     }
+    std::cout << "\n";
     
     return values;
 }
@@ -986,13 +992,13 @@ ImpressionistUI::ImpressionistUI() {
     m_applyFilterDialog = new Fl_Window(400, 325, "Apply Filter Dialog");
     
         // Add kernel scale
-        m_KernelScaleInput = new Fl_Float_Input(100, 50, 50, 25, "kernel scale:");
+        m_KernelScaleInput = new Fl_Float_Input(100, 10, 50, 25, "Filter scale:");
         m_KernelScaleInput->user_data((void*)(this));   // record self to be used by static callback functions
         m_KernelScaleInput->value("1.0");
         m_KernelScaleInput->callback(cb_KernelScaleInput);
     
         // Add kernel offset
-        m_KernelOffsetInput = new Fl_Float_Input(300, 50, 50, 25, "kernel offset:");
+        m_KernelOffsetInput = new Fl_Float_Input(300, 10, 50, 25, "Filter offset:");
         m_KernelOffsetInput->user_data((void*)(this));   // record self to be used by static callback functions
         m_KernelOffsetInput->value("0.0");
         m_KernelOffsetInput->callback(cb_KernelOffsetInput);
@@ -1000,11 +1006,11 @@ ImpressionistUI::ImpressionistUI() {
     
     
         // add kernel value input
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 
-                m_KernelValues[i*3+j] = new Fl_Float_Input(110 + 50 * i, 110 + 40 * j, 50, 30);
-                m_KernelValues[i*3+j]->value("1.0");
+                m_KernelValues[i*5+j] = new Fl_Float_Input(80 + 50 * i, 50 + 35 * j, 50, 30);
+                m_KernelValues[i*5+j]->value("1.0");
             }
         }
     
