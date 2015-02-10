@@ -384,7 +384,7 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
         
     }
     
-    if (type == 3 || type == 4 || type == 5) {
+    if (type == 3 || type == 4 || type == 5 || type == 7) {
         
         pUI->m_MultiColorLightButton->activate();
         
@@ -575,11 +575,10 @@ double* ImpressionistUI::getKernelValues()
     
     for (int i = 0; i < 25; i++) {
             
-            values[i] = (double) atoi( m_KernelValues[i] -> value());
-        std::cout << values[i] <<",";
+        values[i] = (double) atoi( m_KernelValues[i] -> value());
         
     }
-    std::cout << "\n";
+
     
     return values;
 }
@@ -595,42 +594,34 @@ void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
 {
     ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
     
-    std::cout << "m_npreviewNum" << m_npreviewNum <<"\n";
-    
     if (m_npreviewNum == 0) {
         m_npreviewNum = 1;
-         std::cout << "change buffer"<<"\n";
+    
         pDoc->m_ucTempPointer = pDoc->m_ucPainting;
     }
     
     
     const unsigned char* sourceBuffer = pDoc->m_ucPainting;
     
-    std::cout << "get source buffer"<<"\n";
+
     
     unsigned char* temp = new unsigned char [pDoc->m_nPaintWidth*pDoc->m_nPaintHeight*3];
     
     unsigned char* destBuffer = temp;
     
-    std::cout << "get dest buffer"<<"\n";
     
     int srcBufferWidth = pDoc->m_nWidth;
     int srcBufferHeight = pDoc->m_nHeight;
     
     const double *filterKernel = pDoc->m_pUI->getKernelValues();
     
-    std::cout << "get kernel"<<"\n";
     
     int m_scale = pDoc->m_pUI->scale;
     int m_offset = pDoc->m_pUI->offset;
     int m_KernelWidth = pDoc->m_pUI->m_nKernelWidth;
     int m_KernelHeight = pDoc->m_pUI->m_nKernelHeight;
     
-    std::cout << m_scale<<","<< m_offset<<","<< m_KernelWidth<<","<< m_KernelHeight<<"\n";
-    
     pDoc->applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, m_scale, m_offset);
-    
-    std::cout << "after apply"<<"\n";
     
     pDoc->m_ucPainting = temp;
     pDoc->m_pUI->m_paintView->refresh();
@@ -1044,7 +1035,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE+1] = {
 Fl_Menu_Item ImpressionistUI::lineAngleTypeMenu[NUM_LINE_ANGLE_TYPE+1] = {
     {"Slider/Right mouse",	FL_ALT+'s', (Fl_Callback *)ImpressionistUI::cb_lineAngleChoice, (void *)SLIDER_RIGHT},
     {"Brush Direction",		FL_ALT+'b', (Fl_Callback *)ImpressionistUI::cb_lineAngleChoice, (void *)BRUSH_DIRECTION},
-    {"Gradient",		FL_ALT+'g', (Fl_Callback *)ImpressionistUI::cb_lineAngleChoice, (void *)GRADIENT},
+    {"Perpendicular To Gradient",		FL_ALT+'g', (Fl_Callback *)ImpressionistUI::cb_lineAngleChoice, (void *)GRADIENT},
     {0}
 };
 

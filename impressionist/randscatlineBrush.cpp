@@ -45,17 +45,13 @@ void RandScatlineBrush::BrushMove( const Point source, const Point target )
             
             if (frand() < 0.8f) continue;
             
-            
-            
             pDoc->setSize(size / 5 + 1);
             pDoc->setLineWidth(1);
             pDoc->setLineAngle(int(frand()*360));
-            
-          //  std::cout << "angle: " << frand()*360 << "\n";
-            
+  
             Point p = Point(target.x + i, target.y + j);
-            ImpBrush::c_pBrushes[BRUSH_LINES]->BrushMove(p, p);
-            // ImpBrush::c_pBrushes[BRUSH_CIRCLES]->BrushMove(source, p);
+            if (pDoc->getMultiColor()) ImpBrush::c_pBrushes[BRUSH_LINES]->BrushMove(p, p);
+            else ImpBrush::c_pBrushes[BRUSH_LINES]->BrushMove(source, p);
         }
     }
     

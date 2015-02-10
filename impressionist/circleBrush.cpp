@@ -52,8 +52,6 @@ void CircleBrush::BrushMove( const Point source, const Point target )
                     if (pDoc->checkEdge(target.x + realRadius * cos(angle), target.y + realRadius * sin(angle))) break;
                 }
                 
-             //   realRadius = realRadius > radius ? radius : realRadius;
-                
                 glVertex2d( target.x + realRadius * cos(angle), target.y + realRadius * sin(angle));
                 
             }else{

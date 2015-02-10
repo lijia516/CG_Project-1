@@ -188,7 +188,7 @@ void ImpressionistDoc::getEdgeImage(){
     int srcBufferWidth = m_nWidth;
     int srcBufferHeight = m_nHeight;
     unsigned char* destBuffer = m_ucEdgeImageBackup;
-    std::cout<<"before grascale"<<"\n";
+   
     grayscaleImage(sourceBuffer, destBuffer, srcBufferWidth, srcBufferHeight);
     
     
@@ -200,7 +200,7 @@ void ImpressionistDoc::getEdgeImage(){
     int m_KernelHeight = 3;
     sourceBuffer = m_ucEdgeImageBackup;
     destBuffer = m_ucEdgeImageBackup2;
-    std::cout<<"applyFilter"<<"\n";
+    
     applyFilter(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, filterKernel, m_KernelWidth, m_KernelHeight, 1, 0);
     
     double sobelEdgeDetectKnl1[9] = {1,2,1,0,0,0,-1,-2,-1};
@@ -209,7 +209,7 @@ void ImpressionistDoc::getEdgeImage(){
     // edge detection
     sourceBuffer = m_ucEdgeImageBackup2;
     destBuffer = m_ucEdgeImage;
-    std::cout<<"edgeDetective"<<"\n";
+   
     edgeDetector(sourceBuffer, srcBufferWidth, srcBufferHeight, destBuffer, sobelEdgeDetectKnl1, sobelEdgeDetectKnl2, m_KernelWidth, m_KernelHeight);
 }
 
@@ -253,15 +253,6 @@ int ImpressionistDoc::loadImage(char *iname)
     std::cout << "w, h: " << width <<","<<height<<"\n";
 
 	// release old storage
-    
-   // if (m_ucBitmap)         delete [] m_ucBitmap;
-   // if (m_ucPainting)       delete [] m_ucPainting;
-   // if (m_ucEdgeImage)      delete [] m_ucEdgeImage;
-   // if (m_ucGrayscaleImage) delete [] m_ucGrayscaleImage;
-   // if (m_ucPreviewBackup)  delete [] m_ucPreviewBackup;
-   // if (m_ucPreviewBackup2) delete [] m_ucPreviewBackup2;
-    
-    
     delete [] m_ucBitmap;
     delete [] m_ucPainting;
     delete [] m_ucEdgeImage;
@@ -388,8 +379,6 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
 {
 	// This needs to be implemented for image filtering to work.
     
-    std::cout << "divisor, offset: " << divisor <<","<<  offset<< ",";
-    
     int knlSize =  knlWidth * knlHeight;
     int knlCenterRow = knlHeight / 2;
     int knlCenterCol = knlWidth / 2;
@@ -407,37 +396,15 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
                 
                 int nRow = i / knlWidth + (row - knlCenterRow);
                 int nCol = i % knlWidth + (col - knlCenterCol);
-                
-           //     std::cout << nRow << "," << nCol << "\n";
-                
+        
                 if (nRow < 0 || nCol < 0) continue;
                 if (nRow >= srcBufferHeight || nCol >= srcBufferWidth) continue;
                 
                 sumColor[0] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0') * filterKernel[i];
-                
-                
-               // std::cout << "color[0]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+0] - '0' << "\n";
-               // std::cout << "filterKernel2[i]: " << filterKernel2[i] << "\n";
-               // std::cout << "sumcolor[0]: " << sumColor[0] << "\n";
-                
                 sumColor[1] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0') * filterKernel[i];
-                
-                
-               // std::cout << "color[1]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+1] - '0' << "\n";
-               // std::cout << "sumcolor[1]: " << sumColor[1] << "\n";
-                
                 sumColor[2] += (sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0') * filterKernel[i];
-                
-               // std::cout << "color[2]: " << sourceBuffer[3*(nRow*srcBufferWidth+nCol)+2] - '0' << "\n";
-              //  std::cout << "sumcolor[2]: " << sumColor[2] << "\n";
-                
-                
                 sumKernl += filterKernel[i];
                 
-            //    std::cout << "sumKernel: " << sumKernl << "\n";
-             //   int a;
-             //   std::cin >> a;
-               
             }
             
             
@@ -445,23 +412,15 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
                 
                 sumColor[i] = sumColor[i] / (sumKernl);
                 
-               
-                
                 sumColor[i] = sumColor[i] / divisor;
                 sumColor[i] += offset;
                 
                 if (sumColor[i] < 0) sumColor[i] =0;
                 else if (sumColor[i] > 255) sumColor[i] = 255;
                 
-                
                 destBuffer[3*(row*srcBufferWidth+col)+i] = sumColor[i] + '0';
                 
-                
-            //    std::cout << "sumcolor[i]: " << sumColor[i] << ",";
-                
             }
-            
-            // std::cout << "\n";
             
         }
     }
@@ -636,22 +595,22 @@ int ImpressionistDoc::coarseToFinePainting()
     
          std::cout<<"count, maxDiff: " << count << ","<<maxDiff <<"\n";
         
-    for (int i = 0; i < m_nPaintWidth; i = i+gap) {
-        for (int j = 0; j < m_nPaintHeight; j = j+ gap) {
+    for (int i = 0; i < m_nPaintHeight; i = i+gap) {
+        for (int j = 0; j < m_nPaintWidth; j = j+ gap) {
             
-            Point p(i, j);
+            Point p(j, i);
             
             memcpy ( colorOrigin, GetOriginalPixel( p ), 3 );
             
-            colorNew[0] =  m_ucPainting[3*(i*m_nWidth+j)+0];
-            colorNew[1] =  m_ucPainting[3*(i*m_nWidth+j)+1];
-            colorNew[2] =  m_ucPainting[3*(i*m_nWidth+j)+2];
+            colorNew[0] =  m_ucPainting[3*(i*m_nPaintWidth+j)+0];
+            colorNew[1] =  m_ucPainting[3*(i*m_nPaintWidth+j)+1];
+            colorNew[2] =  m_ucPainting[3*(i*m_nPaintWidth+j)+2];
     
             
             double diff = (abs(colorNew[0]-colorOrigin[0]) + abs(colorNew[1]-colorOrigin[1]) + abs(colorNew[2]-colorOrigin[2]))/3;
             
            if (diff > 10) {
-            m_pCurrentBrush->BrushBegin(p,p);
+               m_pCurrentBrush->BrushBegin(p,p);
             
                if (diff > maxDiff) maxDiff = diff;
            }
@@ -688,89 +647,6 @@ int ImpressionistDoc::coarseToFinePainting()
 }
 
 
-/*
-
-//----------------------------------------------------------------
-// Auto Paint
-// This is called by the UI when the auto paint menu item is
-// chosen
-//-----------------------------------------------------------------
-int ImpressionistDoc::autoPaint()
-{
-    
-    // Release old storage
-    if ( m_ucPainting )
-    {
-        delete [] m_ucPainting;
-    }
-    
-    // allocate space for draw view
-    m_ucPainting	= new unsigned char [m_nPaintWidth*m_nPaintHeight*3];
-    memset(m_ucPainting, 0, m_nPaintWidth*m_nPaintHeight*3);
-    
-    int size = 30;
-    int sum = 1;
-    int same = 0;
-    GLubyte color[3];
-    int colorOrigin[3];
-    int colorNew[3];
-    
-    double percent = 0.1;
-    
-    while (size > 2) {
-    
-        std::cout<<"size: " << size <<"\n";
-
-        
-        for (int i = 0; i < m_nPaintHeight; i = i+ 2) {
-        for (int j = 0; j < m_nPaintWidth; j = j+ 2) {
-            
-           // std::cout<<"i, j" << i << ","<<j <<"\n";
-            
-            Point p(i, j);
-            memcpy ( color, GetOriginalPixel( p ), 3 );
-            
-            
-            colorOrigin[0] =  m_ucBitmap[3*(i*m_nWidth+j)+0] - '0';
-            colorOrigin[1] =  m_ucBitmap[3*(i*m_nWidth+j)+1] - '0';
-            colorOrigin[2] =  m_ucBitmap[3*(i*m_nWidth+j)+2] - '0';
-            
-            colorNew[0] =  color[0] - '0';
-            colorNew[1] =  color[1] - '0';
-            colorNew[2] =  color[2] - '0';
-            
-            int diff = sqrt((colorNew[0]-colorOrigin[0])^2 + (colorNew[1]-colorOrigin[1])^2 + (colorNew[2]-colorOrigin[2])^2);
-            
-            if (diff > 10) {
-            
-                setSize(size);
-                m_pCurrentBrush->BrushBegin(p,p);
-                glFlush();
-                m_pUI->m_paintView->SaveCurrentContent();
-            }
-            
-            }
-        
-            m_pUI->m_paintView->refresh();
-        }
-        glFlush();
-        std::cout<<"m_nPaintWidth, m_nPaintHeight" << m_nPaintWidth << ","<<m_nPaintHeight <<"\n";
-    
-        #ifndef MESA
-        // To avoid flicker on some machines.
-        glDrawBuffer(GL_BACK);
-        #endif // !MESA
-    
-        // refresh paint view as well
-    
-        size = size / 2;
-        
-    }
-    
-    return 0;
-}
-
-*/
 //----------------------------------------------------------------
 // Auto Paint
 // This is called by the UI when the auto paint menu item is
@@ -802,8 +678,6 @@ int ImpressionistDoc::autoPaint()
             Point p(i, j);
             m_pCurrentBrush->BrushBegin(p,p);
             
-            std::cout<<"i, j" << i << ","<<j <<"\n";
-            
             glFlush();
             m_pUI->m_paintView->SaveCurrentContent();
             
@@ -812,16 +686,12 @@ int ImpressionistDoc::autoPaint()
         m_pUI->m_paintView->refresh();
     }
     glFlush();
-    std::cout<<"m_nPaintWidth, m_nPaintHeight" << m_nPaintWidth << ","<<m_nPaintHeight <<"\n";
+    
     
 #ifndef MESA
     // To avoid flicker on some machines.
     glDrawBuffer(GL_BACK);
 #endif // !MESA
-    
-    // refresh paint view as well
-    
-    
     return 0;
 }
 

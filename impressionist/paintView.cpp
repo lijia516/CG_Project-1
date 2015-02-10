@@ -47,7 +47,7 @@ void PaintView::draw()
 {
 //	#ifndef MESA
 	// To avoid flicker on some machines.
-  //	glDrawBuffer(GL_FRONT_AND_BACK);
+  	glDrawBuffer(GL_FRONT_AND_BACK);
 //	#endif // !MESA
 
 	if(!valid())
@@ -150,10 +150,6 @@ void PaintView::draw()
             } else {
                 
                 double temp = (target.y - lineAngleStartPoint.y)*1.0 / (target.x - lineAngleStartPoint.x);
-                
-           //     std::cout << "temp: " << temp<< "\n";
-           //     std::cout << "angle: " << atan(temp) * 180 / PI<< "\n";
-
                 m_pDoc->setLineAngle(atan(temp) * 180 / PI);
             }
                 
@@ -279,7 +275,7 @@ void PaintView::RestoreContent()
 }
 
 
-
+//get Perpendicular Direction To Gradient
 int PaintView::getPerpendicularDirectionToGradient()
 {
     
@@ -313,6 +309,8 @@ int PaintView::getPerpendicularDirectionToGradient()
     return int (atan(sumYGF/sumXGF) * 180 / PI + 90);
 }
 
+
+// get brush direction
 int PaintView::getBrushDirection() {
     
     if (pre_coord.x == coord.x) return 90;
@@ -320,6 +318,8 @@ int PaintView::getBrushDirection() {
     return int (atan((coord.y - pre_coord.y)/(coord.x - pre_coord.x)) * 180 / PI);
     
 }
+
+
 
 int PaintView::getWindowWidth() {
     
