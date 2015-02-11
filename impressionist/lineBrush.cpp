@@ -43,7 +43,7 @@ void LineBrush::BrushMove( const Point source, const Point target )
     
         for (double i = half_lineWidth; i >= - half_lineWidth; i -= 0.5) {
             
-            if (pDoc->getEdgeClipping()) {
+            if (pDoc->getEdgeClipping() || pDoc->getAnotherEdgeClipping()) {
                 
                 int leftSize = 0;
                 for (; leftSize <= size / 2; leftSize++) {

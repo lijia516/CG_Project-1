@@ -45,7 +45,7 @@ void CircleBrush::BrushMove( const Point source, const Point target )
         for (int i = 0; i < EDGES; i++) {
             double angle = 2 * M_PI * i / EDGES;
             
-            if (pDoc->getEdgeClipping()) {
+            if (pDoc->getEdgeClipping() || pDoc->getAnotherEdgeClipping()) {
                 
                 int realRadius = 0;
                 for (; realRadius <= radius; realRadius++) {

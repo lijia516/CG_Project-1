@@ -64,6 +64,7 @@ public:
     
     bool		getMultiColor();				// get the UI multi color
     bool		getEdgeClipping();				// get the UI edge clipping
+    bool		getAnotherEdgeClipping();				// get the UI edge clipping
     bool		getAnotherGradient();			// get the UI another gradient
     
 	char*	getImageName();					// get the current image name

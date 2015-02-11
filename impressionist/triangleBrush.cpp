@@ -40,7 +40,7 @@ void TriangleBrush::BrushMove( const Point source, const Point target )
 	glBegin( GL_POLYGON );
 		SetColor( source );
     
-        if (pDoc->getEdgeClipping()) {
+        if (pDoc->getEdgeClipping() || pDoc->getAnotherEdgeClipping()) {
         
             
             double upSize = 0;

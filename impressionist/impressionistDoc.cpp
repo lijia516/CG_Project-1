@@ -182,6 +182,15 @@ bool ImpressionistDoc::getEdgeClipping()
 
 
 //---------------------------------------------------------
+// Returns the if edge clipping or not.
+//---------------------------------------------------------
+bool ImpressionistDoc::getAnotherEdgeClipping()
+{
+    return m_pUI->getAnotherEdgeClipping();
+}
+
+
+//---------------------------------------------------------
 // Returns the if using the gradient in another image or not.
 //---------------------------------------------------------
 bool ImpressionistDoc::getAnotherGradient()
@@ -335,7 +344,7 @@ int ImpressionistDoc::loadImage(char *iname)
 	m_pUI->m_paintView->resizeWindow(width, height);	
 	m_pUI->m_paintView->refresh();
     
-    std::cout << "finish paintView" <<"\n";
+    std::cout << "finish load image" <<"\n";
 
 
 	return 1;
@@ -721,10 +730,21 @@ int ImpressionistDoc::checkEdge(int targetX, int targetY)
     }
     
     
-    if (m_ucEdgeImage) {
+    if (m_pUI->getAnotherEdgeClipping()) {
         
-        if (m_ucEdgeImage[3*(targetY * m_nPaintWidth + targetX) + 0] == 255) return 1;
+        if (m_ucBlackAndWhiteImage) {
+            
+            if (m_ucBlackAndWhiteImage[3*(targetY * m_nBlackAndWhiteImageWidth + targetX) + 0] == 255) return 1;
+        }
+        
+    } else {
+        
+        if (m_ucEdgeImage) {
+            
+            if (m_ucEdgeImage[3*(targetY * m_nPaintWidth + targetX) + 0] == 255) return 1;
+        }
     }
+    
     
     return 0;
 }
