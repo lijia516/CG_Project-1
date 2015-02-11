@@ -228,9 +228,6 @@ void ImpressionistUI::cb_save_image(Fl_Menu_* o, void* v)
 void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v) 
 {
 	whoami(o)->m_brushDialog->show();
-    whoami(o)->m_MultiColorLightButton->value(FALSE);
-    whoami(o)->m_EdgeClippingLightButton->value(FALSE);
-    whoami(o)->m_AnotherGradientLightButton->value(FALSE);
 }
 
 //-------------------------------------------------------------
@@ -411,6 +408,16 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
     }else {
         
         pUI->m_MultiColorLightButton->deactivate();
+    }
+    
+    
+    if (type == 0 || type == 3) {
+        
+        pUI->m_EdgeClippingLightButton->deactivate();
+        
+    } else {
+        
+        pUI->m_EdgeClippingLightButton->activate();
     }
     
 	pDoc->setBrushType(type);
@@ -1036,7 +1043,6 @@ int ImpressionistUI::getLineAngle()
     
     switch (m_nLineAngleType) {
         case SLIDER_RIGHT:
-            m_nLineAngle = int (m_BrushLineAngleSlider->value());
             break;
             
         case BRUSH_DIRECTION:
@@ -1262,6 +1268,7 @@ ImpressionistUI::ImpressionistUI() {
         m_EdgeClippingLightButton = new Fl_Light_Button(10,185,120,25,"&Edge Clipping");
         m_EdgeClippingLightButton->user_data((void*)(this));   // record self to be used by static callback functions
         m_EdgeClippingLightButton->callback(cb_edgeClippingLightButton);
+        m_EdgeClippingLightButton->deactivate();
     
         // Add another gradient button
         m_AnotherGradientLightButton = new Fl_Light_Button(150,185,235,25,"&Perpendicular to Another Gradient");

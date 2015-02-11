@@ -298,7 +298,7 @@ int PaintView::getPerpendicularDirectionToGradient()
             memcpy ( color, m_pDoc->GetOriginalPixel( source ), 3 );
         }
         
-        sumXGF += (0.299 * (color[0] - '0') + 0.587 * (color[1] - '0') + 0.114 * (color[2] - '0')) * xGradFilter[i];
+        sumXGF += (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) * xGradFilter[i];
         
     }
     
@@ -319,7 +319,7 @@ int PaintView::getPerpendicularDirectionToGradient()
         }
         
         
-        sumYGF += (0.299 * (color[0] - '0') + 0.587 * (color[1] - '0') + 0.114 * (color[2] - '0')) * yGradFilter[j];
+        sumYGF += (0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2]) * yGradFilter[j];
         
     }
     
