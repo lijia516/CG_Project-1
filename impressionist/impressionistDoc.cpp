@@ -206,14 +206,6 @@ bool ImpressionistDoc::getColorBlending()
     return m_pUI->getColorBlending();
 }
 
-//---------------------------------------------------------
-// Returns the size of the brush.
-//---------------------------------------------------------
-double* ImpressionistDoc::getColorChoice()
-{
-    return m_pUI->getColorChoice();
-}
-
 
 // set the width of the line brush.
 //---------------------------------------------------------

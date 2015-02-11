@@ -188,40 +188,6 @@ void ImpressionistUI::cb_load_image(Fl_Menu_* o, void* v)
 	}
 }
 
-
-double ImpressionistUI::m_nColorChoice[3] = {0,0,0};
-
-//------------------------------------------------------------------
-// Brings up a file chooser and then loads the chosen image
-// This is called by the UI when the load image menu item is chosen
-//------------------------------------------------------------------
-/*void ImpressionistUI::cb_color_chooser(Fl_Menu_* o, void* v)
-{
-    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
-    
-    std::cout<< pUI->m_ColorChooser->r() <<"\n";
-    
-    
-    if (newColor == 1) {
-        
-        pUI->m_nColorBlending = true;
-        
-        std::cout<<"color blending true\n";
-        
-      //  std::cout<<pUI->m_nColorChoice[0]<<","<<pUI->m_nColorChoice[1]<<","<<pUI->m_nColorChoice[2]<<"\n";
-        
-        
-    } else {
-        pUI->m_nColorBlending = false;
-        m_nColorChoice[0] = 0;
-        m_nColorChoice[1] = 0;
-        m_nColorChoice[2] = 0;
-    }
-  
-  
- 
-} */
-
 //------------------------------------------------------------------
 // Brings up a file chooser and then loads the chosen image
 // This is called by the UI when the load image menu item is chosen
@@ -942,6 +908,29 @@ void ImpressionistUI::cb_multiColorLightButton(Fl_Widget* o, void* v)
 
 
 //-----------------------------------------------------------
+// Updates the multicolor status from the edge clipping
+// light button
+// Called by the UI when the line width edge clipping light button is pressed
+//-----------------------------------------------------------
+void ImpressionistUI::cb_colorBlendingLightButton(Fl_Widget* o, void* v)
+{
+    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    
+    if (pUI->m_nColorBlending==TRUE) pUI->m_nColorBlending=FALSE;
+    
+    else {
+        
+        pUI->m_nColorBlending=TRUE;
+        
+    }
+    
+        std::cout << "color blending: " << pUI->m_nColorBlending << "\n";
+}
+
+
+//-----------------------------------------------------------
 // Updates the rand space status from the edge clipping
 // light button
 // Called by the UI when the line width edge clipping light button is pressed
@@ -1068,14 +1057,6 @@ void ImpressionistUI::setAlpha( float alpha )
 bool ImpressionistUI::getColorBlending()
 {
     return m_nColorBlending;
-}
-
-//------------------------------------------------
-// Return the color blending
-//------------------------------------------------
-double* ImpressionistUI::getColorChoice()
-{
-    return m_nColorChoice;
 }
 
 
@@ -1483,7 +1464,14 @@ ImpressionistUI::ImpressionistUI() {
         m_CoarseToFinePaintButton->callback(cb_coarse_to_fine_paint_button);
     
     
-        m_ColorChooser = new Fl_Color_Chooser(10, 350, 300, 125, "&Color Chooser");
+    
+        // Add random space button to control the color source of scatted brush
+        m_colorBlendingLightButton = new Fl_Light_Button(10,320,130,25,"&Color Blending");
+        m_colorBlendingLightButton->user_data((void*)(this));   // record self to be used by static callback functions
+        m_colorBlendingLightButton->callback(cb_colorBlendingLightButton);
+    
+        // color chooser
+        m_ColorChooser = new Fl_Color_Chooser(10, 350, 300, 125);
         m_ColorChooser->user_data((void*)(this));
 
     m_brushDialog->end();

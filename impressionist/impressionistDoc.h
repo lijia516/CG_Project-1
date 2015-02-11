@@ -69,8 +69,6 @@ public:
     
     
     bool		getColorBlending();						// get the UI size
-    double*		getColorChoice();						// get the UI size
-    
     
     
 	char*	getImageName();					// get the current image name

@@ -49,10 +49,8 @@ void ImpBrush::SetColor (const Point source)
 
 	memcpy ( color, pDoc->GetOriginalPixel( source ), 3 );
     
-   // pDoc->getColorBlending()
-    if (1) {
-        
-      //  double* colorBlending = pDoc->getColorChoice();
+   
+    if (pDoc->getColorBlending()) {
         
         std::cout<<pDoc->m_pUI->m_ColorChooser->r()<<","<<pDoc->m_pUI->m_ColorChooser->g()<<","<<pDoc->m_pUI->m_ColorChooser->b()<<"\n";
         

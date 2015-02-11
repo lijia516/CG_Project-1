@@ -66,6 +66,7 @@ public:
     Fl_Light_Button*    m_MultiColorLightButton;
     Fl_Light_Button*    m_RandSpaceLightButton;
     Fl_Light_Button*    m_AnotherGradientLightButton;
+    Fl_Light_Button*    m_colorBlendingLightButton;
     
     Fl_Color_Chooser*   m_ColorChooser;
     
@@ -124,7 +125,6 @@ public:
     bool                getAnotherGradient();
     
     bool                getColorBlending();
-    double*      getColorChoice();
 
 	// Callbacks for the image filter dialogue (different from
 	// the other callbacks because they aren't static)
@@ -154,12 +154,6 @@ private:
     bool    m_nRandSpace;
     bool    m_nAnotherGradient;
     bool    m_nColorBlending;
-    
- //  static double m_nColorChoiceR;
- //  static double m_nColorChoiceG;
- //  static double m_nColorChoiceB;
-    
-    static double m_nColorChoice[3];
 
 	// These attributes are set by the filter kernel UI
 	double fltKernel[FLT_WIDTH*FLT_HEIGHT];		//the kernel of the image filter
@@ -227,6 +221,7 @@ private:
     static void cb_multiColorLightButton(Fl_Widget* o, void* v);
     static void cb_randSpaceLightButton(Fl_Widget* o, void* v);
     static void cb_anotherGradientLightButton(Fl_Widget* o, void* v);
+    static void cb_colorBlendingLightButton(Fl_Widget* o, void* v);
 
 };
 
