@@ -205,6 +205,22 @@ void ImpressionistUI::cb_load_another_image(Fl_Menu_* o, void* v)
 }
 
 
+//------------------------------------------------------------------
+// Brings up a file chooser and then loads the chosen image
+// This is called by the UI when the load image menu item is chosen
+//------------------------------------------------------------------
+void ImpressionistUI::cb_load_black_and_white_image(Fl_Menu_* o, void* v)
+{
+    ImpressionistDoc *pDoc=whoami(o)->getDocument();
+    
+    char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getBlackAndWhiteImageName() );
+    if (newfile != NULL) {
+        pDoc->loadBlackAndWhiteImage(newfile);
+        pDoc->hasBlackAndWhiteImage = true;
+    }
+}
+
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -414,10 +430,12 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
     if (type == 0 || type == 3) {
         
         pUI->m_EdgeClippingLightButton->deactivate();
+        pUI->m_AnotherEdgeClippingLightButton->deactivate();
         
     } else {
         
         pUI->m_EdgeClippingLightButton->activate();
+        pUI->m_AnotherEdgeClippingLightButton->activate();
     }
     
 	pDoc->setBrushType(type);
@@ -805,6 +823,35 @@ void ImpressionistUI::cb_edgeClippingLightButton(Fl_Widget* o, void* v)
 }
 
 
+//-----------------------------------------------------------
+// Updates the gradience status from the perpendicular to gradient from anther image
+// light button
+// Called by the UI when the line width edge clipping light button is pressed
+//-----------------------------------------------------------
+void ImpressionistUI::cb_anotherEdgeClippingLightButton(Fl_Widget* o, void* v)
+{
+    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    
+    if (pUI->m_nAnotherEdgeClipping==TRUE) pUI->m_nAnotherEdgeClipping=FALSE;
+    
+    else {
+        
+        pUI->m_nAnotherEdgeClipping=TRUE;
+        
+        if (pDoc->hasBlackAndWhiteImage == false) {
+            
+            char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getBlackAndWhiteImageName() );
+            if (newfile != NULL) {
+                pDoc->loadBlackAndWhiteImage(newfile);
+                pDoc->hasBlackAndWhiteImage = true;
+            }
+            
+        }
+    }
+}
+
 
 //-----------------------------------------------------------
 // Updates the gradience status from the perpendicular to gradient from anther image
@@ -1005,6 +1052,14 @@ bool ImpressionistUI::getEdgeClipping()
     return m_nEdgeClipping;
 }
 
+//------------------------------------------------
+// Return the multi color
+//------------------------------------------------
+bool ImpressionistUI::getAnotherEdgeClipping()
+{
+    return m_nAnotherEdgeClipping;
+}
+
 
 //------------------------------------------------
 // Return if use another gradient or not
@@ -1084,6 +1139,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 		
         { "&Load Another Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_another_image },
+        { "&Load B&W Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_black_and_white_image },
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 
@@ -1270,8 +1326,16 @@ ImpressionistUI::ImpressionistUI() {
         m_EdgeClippingLightButton->callback(cb_edgeClippingLightButton);
         m_EdgeClippingLightButton->deactivate();
     
+    
         // Add another gradient button
-        m_AnotherGradientLightButton = new Fl_Light_Button(150,185,235,25,"&Perpendicular to Another Gradient");
+        m_AnotherEdgeClippingLightButton = new Fl_Light_Button(150,185,235,25,"& Edge Clipping Base on B&W file");
+        m_AnotherEdgeClippingLightButton->user_data((void*)(this));   // record self to be used by static callback functions
+        m_AnotherEdgeClippingLightButton->callback(cb_anotherEdgeClippingLightButton);
+        m_AnotherEdgeClippingLightButton->deactivate();
+    
+    
+        // Add another gradient button
+        m_AnotherGradientLightButton = new Fl_Light_Button(10,230,235,25,"&Perpendicular to Another Gradient");
         m_AnotherGradientLightButton->user_data((void*)(this));   // record self to be used by static callback functions
         m_AnotherGradientLightButton->callback(cb_anotherGradientLightButton);
         m_AnotherGradientLightButton->deactivate();
@@ -1333,21 +1397,21 @@ ImpressionistUI::ImpressionistUI() {
         m_BrushLineAngleSlider->deactivate();
     
         // Add auto paint
-        m_AutoPaintButton = new Fl_Button(305,230,80,25,"&Auto Paint");
+        m_AutoPaintButton = new Fl_Button(305,280,80,25,"&Auto Paint");
         m_AutoPaintButton->user_data((void*)(this));
         m_AutoPaintButton->callback(cb_auto_paint_button);
     
     
     
         // Add random space button to control the color source of scatted brush
-        m_RandSpaceLightButton = new Fl_Light_Button(205,230,95,25,"&RandSpace");
+        m_RandSpaceLightButton = new Fl_Light_Button(205,280,95,25,"&RandSpace");
         m_RandSpaceLightButton->user_data((void*)(this));   // record self to be used by static callback functions
         m_RandSpaceLightButton->callback(cb_randSpaceLightButton);
     
     
     
         // Add spacing slider to the dialog
-        m_DrawSpaceSlider = new Fl_Value_Slider(10, 230, 150, 20, "draw\nspace");
+        m_DrawSpaceSlider = new Fl_Value_Slider(10, 280, 150, 20, "draw\nspace");
         m_DrawSpaceSlider->user_data((void*)(this));	// record self to be used by static callback functions
         m_DrawSpaceSlider->type(FL_HOR_NICE_SLIDER);
         m_DrawSpaceSlider->labelfont(FL_COURIER);
@@ -1362,7 +1426,7 @@ ImpressionistUI::ImpressionistUI() {
     
     
         // Add auto paint
-        m_CoarseToFinePaintButton = new Fl_Button(100,280,150,25,"&CoarseToFine Paint");
+        m_CoarseToFinePaintButton = new Fl_Button(250,230,135,25,"&CoarseToFine Paint");
         m_CoarseToFinePaintButton->user_data((void*)(this));
         m_CoarseToFinePaintButton->callback(cb_coarse_to_fine_paint_button);
     

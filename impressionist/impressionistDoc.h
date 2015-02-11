@@ -24,6 +24,7 @@ public:
 	int		saveImage(char *iname);			// called by the UI to save image
     
     int		loadAnotherImage(char *iname);			// called by the UI to load another image
+    int		loadBlackAndWhiteImage(char *iname);			// called by the UI to load another image
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -67,6 +68,7 @@ public:
     
 	char*	getImageName();					// get the current image name
     char*	getAnotherImageName();					// get the current image name
+    char*	getBlackAndWhiteImageName();					// get the current image name
     int     checkEdge(int targetX, int targetY);
     
     void	getEdgeImage();         // store edge image in m_ucEdgeImage
@@ -88,6 +90,8 @@ public:
     
     // Dimensions of another image.
     int				m_nAnotherImageWidth, m_nAnotherImageHeight;
+    // Dimensions of black and white image.
+    int				m_nBlackAndWhiteImageWidth, m_nBlackAndWhiteImageHeight;
     
 	// Bitmaps for original image and painting.
     
@@ -96,6 +100,7 @@ public:
     unsigned char*	m_ucEdgeImage;
     unsigned char*	m_ucGrayscaleImage;
     unsigned char*	m_ucAnotherImage;
+    unsigned char*	m_ucBlackAndWhiteImage;
 
 	// Used by the filtering code so that we can
 	// preview filters before applying.
@@ -114,6 +119,7 @@ public:
     bool hasEdgeImage;
     bool hasGrayscaleImage;
     bool hasAnotherImage;
+    bool hasBlackAndWhiteImage;
     
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;
@@ -141,12 +147,18 @@ public:
     // Get the color of another picture at the specified point
     GLubyte* GetAnotherPixel( const Point p );
     
+    // Get the color of another picture at the specified coord
+    GLubyte* GetBlackAndWhitePixel( int x, int y );
+    // Get the color of another picture at the specified point
+    GLubyte* GetBlackAndWhitePixel( const Point p );
+    
 
 
 
 private:
 	char			m_imageName[256];
     char			m_anotherImageName[256];
+    char            m_blackAndWhiteImageName[256];
 
 };
 

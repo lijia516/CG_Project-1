@@ -38,6 +38,7 @@ ImpressionistDoc::ImpressionistDoc()
 	// Set NULL image name as init. 
 	m_imageName[0]	='\0';	
     m_anotherImageName[0] = '\0';
+    m_blackAndWhiteImageName[0] = '\0';
     
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
@@ -51,10 +52,12 @@ ImpressionistDoc::ImpressionistDoc()
     m_ucEdgeImageBackup2 = NULL;
     m_ucTempPointer = NULL;
     m_ucAnotherImage		= NULL;
+    m_ucBlackAndWhiteImage		= NULL;
     
     hasEdgeImage = false;
     hasGrayscaleImage = false;
     hasAnotherImage = false;
+    hasBlackAndWhiteImage = false;
 
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
@@ -107,6 +110,16 @@ char* ImpressionistDoc::getAnotherImageName()
 {
     return m_anotherImageName;
 }
+
+
+//---------------------------------------------------------
+// Returns the active picture/painting name
+//---------------------------------------------------------
+char* ImpressionistDoc::getBlackAndWhiteImageName()
+{
+    return m_blackAndWhiteImageName;
+}
+
 
 //---------------------------------------------------------
 // Called by the UI when the user changes the brush type.
@@ -360,6 +373,40 @@ int ImpressionistDoc::loadAnotherImage(char *iname)
     hasAnotherImage = true;
 
     std::cout << "finish load another image" <<"\n";
+    
+    return 1;
+}
+
+//---------------------------------------------------------
+// Load the specified image
+// This is called by the UI when the load image button is
+// pressed.
+//---------------------------------------------------------
+int ImpressionistDoc::loadBlackAndWhiteImage(char *iname)
+{
+    // try to open the image to read
+    unsigned char*	data;
+    int				width,
+    height;
+    
+    if ( (data=readBMP(iname, width, height))==NULL )
+    {
+        fl_alert("Can't load bitmap file");
+        return 0;
+    }
+    
+    // reflect the fact of loading the new image
+    m_nBlackAndWhiteImageWidth	= width;
+    m_nBlackAndWhiteImageHeight	= height;
+    
+    std::cout << "black_and_white w, h: " << width <<","<<height<<"\n";
+    
+    // release old storage
+    delete [] m_ucBlackAndWhiteImage;
+    m_ucBlackAndWhiteImage	= data;
+    hasBlackAndWhiteImage = true;
+    
+    std::cout << "finish load black_and_white image" <<"\n";
     
     return 1;
 }
@@ -625,6 +672,33 @@ GLubyte* ImpressionistDoc::GetAnotherPixel( const Point p )
     return GetAnotherPixel( p.x, p.y );
 }
 
+
+
+//------------------------------------------------------------------
+// Get the color of the pixel in the another image at coord x and y
+//------------------------------------------------------------------
+GLubyte* ImpressionistDoc::GetBlackAndWhitePixel( int x, int y )
+{
+    if ( x < 0 )
+        x = 0;
+    else if ( x >= m_nBlackAndWhiteImageWidth )
+        x = m_nBlackAndWhiteImageWidth -1;
+    
+    if ( y < 0 )
+        y = 0;
+    else if ( y >= m_nBlackAndWhiteImageHeight )
+        y = m_nBlackAndWhiteImageHeight-1;
+    
+    return (GLubyte*)(m_ucBlackAndWhiteImage + 3 * (y*m_nBlackAndWhiteImageWidth + x));
+}
+
+//----------------------------------------------------------------
+// Get the color of the pixel in the original image at point p
+//----------------------------------------------------------------
+GLubyte* ImpressionistDoc::GetBlackAndWhitePixel( const Point p )
+{
+    return GetBlackAndWhitePixel( p.x, p.y );
+}
 
 
 

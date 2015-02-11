@@ -62,6 +62,7 @@ public:
     Fl_Slider*			m_DrawSpaceSlider;
     
     Fl_Light_Button*    m_EdgeClippingLightButton;
+    Fl_Light_Button*    m_AnotherEdgeClippingLightButton;
     Fl_Light_Button*    m_MultiColorLightButton;
     Fl_Light_Button*    m_RandSpaceLightButton;
     Fl_Light_Button*    m_AnotherGradientLightButton;
@@ -116,6 +117,7 @@ public:
     
     bool                getMultiColor();
     bool                getEdgeClipping();
+    bool                getAnotherEdgeClipping();
     bool                getRandSpace();
     bool                getAnotherGradient();
 
@@ -142,6 +144,7 @@ private:
     int		m_nLineAngle;
     int     m_nLineAngleType;
     bool    m_nEdgeClipping;
+    bool    m_nAnotherEdgeClipping;
     bool    m_nMultiColor;
     bool    m_nRandSpace;
     bool    m_nAnotherGradient;
@@ -166,6 +169,7 @@ private:
 	// static
 	static void	cb_load_image(Fl_Menu_* o, void* v);
     static void	cb_load_another_image(Fl_Menu_* o, void* v);
+    static void	cb_load_black_and_white_image(Fl_Menu_* o, void* v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
    
@@ -207,6 +211,7 @@ private:
     static void cb_view_original_image(Fl_Menu_* o, void* v);
     static void cb_view_another_image(Fl_Menu_* o, void* v);
     static void cb_edgeClippingLightButton(Fl_Widget* o, void* v);
+    static void cb_anotherEdgeClippingLightButton(Fl_Widget* o, void* v);
     static void cb_multiColorLightButton(Fl_Widget* o, void* v);
     static void cb_randSpaceLightButton(Fl_Widget* o, void* v);
     static void cb_anotherGradientLightButton(Fl_Widget* o, void* v);
