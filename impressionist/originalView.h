@@ -25,6 +25,7 @@ enum
     ORIGINAL_IMAGE = 0,
     GRAYSCALE_IMAGE = 1,
     DEGE_IMAGE = 2,
+    ANOTHER_IMAGE = 3,
     NUM_IMAGE_TYPE// Make sure this stays at the end!
 };
 

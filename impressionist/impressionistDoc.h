@@ -22,6 +22,8 @@ public:
 
 	int		loadImage(char *iname);			// called by the UI to load image
 	int		saveImage(char *iname);			// called by the UI to save image
+    
+    int		loadAnotherImage(char *iname);			// called by the UI to load another image
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -59,10 +61,12 @@ public:
     int		getLineAngle();						// get the UI lineAngle
     void	setLineAngle(int lineAngle);		// set the UI lineAngle
     
-    bool		getMultiColor();						// get the UI multi color
-    bool		getEdgeClipping();						// get the UI edge clipping
+    bool		getMultiColor();				// get the UI multi color
+    bool		getEdgeClipping();				// get the UI edge clipping
+    bool		getAnotherGradient();			// get the UI another gradient
     
 	char*	getImageName();					// get the current image name
+    char*	getAnotherImageName();					// get the current image name
     int     checkEdge(int targetX, int targetY);
     
     void	getEdgeImage();         // store edge image in m_ucEdgeImage
@@ -80,13 +84,18 @@ public:
 					m_nHeight;
 	// Dimensions of the paint window.
 	int				m_nPaintWidth, 
-					m_nPaintHeight;	
+					m_nPaintHeight;
+    
+    // Dimensions of another image.
+    int				m_nAnotherImageWidth, m_nAnotherImageHeight;
+    
 	// Bitmaps for original image and painting.
     
 	unsigned char*	m_ucBitmap;
 	unsigned char*	m_ucPainting;
     unsigned char*	m_ucEdgeImage;
     unsigned char*	m_ucGrayscaleImage;
+    unsigned char*	m_ucAnotherImage;
 
 	// Used by the filtering code so that we can
 	// preview filters before applying.
@@ -96,9 +105,15 @@ public:
     unsigned char*	m_ucPreviewBackup2;
     unsigned char*  m_ucTempPointer;
     
+    
+    
+    
+  //  unsigned char*	m_ucSecondImage;
+    
     //if the images have generated
     bool hasEdgeImage;
     bool hasGrayscaleImage;
+    bool hasAnotherImage;
     
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;
@@ -121,11 +136,17 @@ public:
 	// Get the color of the original picture at the specified point	
 	GLubyte* GetOriginalPixel( const Point p );
     
+    // Get the color of another picture at the specified coord
+    GLubyte* GetAnotherPixel( int x, int y );
+    // Get the color of another picture at the specified point
+    GLubyte* GetAnotherPixel( const Point p );
+    
 
 
 
 private:
 	char			m_imageName[256];
+    char			m_anotherImageName[256];
 
 };
 

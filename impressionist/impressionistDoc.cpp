@@ -37,9 +37,11 @@ ImpressionistDoc::ImpressionistDoc()
 {
 	// Set NULL image name as init. 
 	m_imageName[0]	='\0';	
-
+    m_anotherImageName[0] = '\0';
+    
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
+    
 	m_ucPainting	= NULL;
     m_ucEdgeImage   = NULL;
     m_ucGrayscaleImage   = NULL;
@@ -48,9 +50,11 @@ ImpressionistDoc::ImpressionistDoc()
     m_ucEdgeImageBackup = NULL;
     m_ucEdgeImageBackup2 = NULL;
     m_ucTempPointer = NULL;
+    m_ucAnotherImage		= NULL;
     
     hasEdgeImage = false;
     hasGrayscaleImage = false;
+    hasAnotherImage = false;
 
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
@@ -94,6 +98,14 @@ void ImpressionistDoc::setUI(ImpressionistUI* ui)
 char* ImpressionistDoc::getImageName() 
 {
 	return m_imageName;
+}
+
+//---------------------------------------------------------
+// Returns the active picture/painting name
+//---------------------------------------------------------
+char* ImpressionistDoc::getAnotherImageName()
+{
+    return m_anotherImageName;
 }
 
 //---------------------------------------------------------
@@ -153,6 +165,15 @@ bool ImpressionistDoc::getMultiColor()
 bool ImpressionistDoc::getEdgeClipping()
 {
     return m_pUI->getEdgeClipping();
+}
+
+
+//---------------------------------------------------------
+// Returns the if using the gradient in another image or not.
+//---------------------------------------------------------
+bool ImpressionistDoc::getAnotherGradient()
+{
+    return m_pUI->getAnotherGradient();
 }
 
 
@@ -297,10 +318,49 @@ int ImpressionistDoc::loadImage(char *iname)
 	// refresh paint view as well
 	m_pUI->m_paintView->resizeWindow(width, height);	
 	m_pUI->m_paintView->refresh();
+    
+    std::cout << "finish paintView" <<"\n";
 
 
 	return 1;
 }
+
+
+
+//---------------------------------------------------------
+// Load the specified image
+// This is called by the UI when the load image button is
+// pressed.
+//---------------------------------------------------------
+int ImpressionistDoc::loadAnotherImage(char *iname)
+{
+    // try to open the image to read
+    unsigned char*	data;
+    int				width,
+    height;
+    
+    if ( (data=readBMP(iname, width, height))==NULL )
+    {
+        fl_alert("Can't load bitmap file");
+        return 0;
+    }
+    
+    // reflect the fact of loading the new image
+    m_nAnotherImageWidth	= width;
+    m_nAnotherImageHeight	= height;
+    
+    std::cout << "another w, h: " << width <<","<<height<<"\n";
+    
+    // release old storage
+    delete [] m_ucAnotherImage;
+    m_ucAnotherImage	= data;
+    hasAnotherImage = true;
+
+    std::cout << "finish load another image" <<"\n";
+    
+    return 1;
+}
+
 
 
 //----------------------------------------------------------------
@@ -528,6 +588,7 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( int x, int y )
 	return (GLubyte*)(m_ucBitmap + 3 * (y*m_nWidth + x));
 }
 
+
 //----------------------------------------------------------------
 // Get the color of the pixel in the original image at point p
 //----------------------------------------------------------------
@@ -537,6 +598,40 @@ GLubyte* ImpressionistDoc::GetOriginalPixel( const Point p )
 }
 
 
+
+
+//------------------------------------------------------------------
+// Get the color of the pixel in the another image at coord x and y
+//------------------------------------------------------------------
+GLubyte* ImpressionistDoc::GetAnotherPixel( int x, int y )
+{
+    if ( x < 0 )
+        x = 0;
+    else if ( x >= m_nAnotherImageWidth )
+        x = m_nAnotherImageWidth -1;
+    
+    if ( y < 0 )
+        y = 0;
+    else if ( y >= m_nAnotherImageHeight )
+        y = m_nAnotherImageHeight-1;
+    
+    return (GLubyte*)(m_ucAnotherImage + 3 * (y*m_nAnotherImageWidth + x));
+}
+
+//----------------------------------------------------------------
+// Get the color of the pixel in the original image at point p
+//----------------------------------------------------------------
+GLubyte* ImpressionistDoc::GetAnotherPixel( const Point p )
+{
+    return GetAnotherPixel( p.x, p.y );
+}
+
+
+
+
+
+
+// Check Edge
 int ImpressionistDoc::checkEdge(int targetX, int targetY)
 {
     

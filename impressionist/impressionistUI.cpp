@@ -190,6 +190,23 @@ void ImpressionistUI::cb_load_image(Fl_Menu_* o, void* v)
 
 
 //------------------------------------------------------------------
+// Brings up a file chooser and then loads the chosen image
+// This is called by the UI when the load image menu item is chosen
+//------------------------------------------------------------------
+void ImpressionistUI::cb_load_another_image(Fl_Menu_* o, void* v)
+{
+    ImpressionistDoc *pDoc=whoami(o)->getDocument();
+    
+    char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getAnotherImageName() );
+    if (newfile != NULL) {
+        pDoc->loadAnotherImage(newfile);
+        pDoc->hasAnotherImage = true;
+    }
+}
+
+
+
+//------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
 // This is called by the UI when the save image menu item is chosen
 //------------------------------------------------------------------
@@ -211,6 +228,9 @@ void ImpressionistUI::cb_save_image(Fl_Menu_* o, void* v)
 void ImpressionistUI::cb_brushes(Fl_Menu_* o, void* v) 
 {
 	whoami(o)->m_brushDialog->show();
+    whoami(o)->m_MultiColorLightButton->value(FALSE);
+    whoami(o)->m_EdgeClippingLightButton->value(FALSE);
+    whoami(o)->m_AnotherGradientLightButton->value(FALSE);
 }
 
 //-------------------------------------------------------------
@@ -381,7 +401,7 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
         pUI->m_LineAngleTypeChoice->deactivate();
         pUI->m_BrushLineWidthSlider->deactivate();
         pUI->m_BrushLineAngleSlider->deactivate();
-        
+        pUI->m_AnotherGradientLightButton->deactivate();
     }
     
     if (type == 3 || type == 4 || type == 5 || type == 7) {
@@ -412,15 +432,28 @@ void ImpressionistUI::cb_lineAngleChoice(Fl_Widget* o, void* v)
     long long tmp = reinterpret_cast<long long>(v);
     int lineAngleType = static_cast<int>(tmp);
     
-    if (lineAngleType == 0) {
-        
-        pUI->m_BrushLineAngleSlider->activate();
-    }else{
-        
-        pUI->m_BrushLineAngleSlider->deactivate();
+    pUI->m_nLineAngleType = lineAngleType;
+    
+    switch (lineAngleType) {
+        case SLIDER_RIGHT:
+            pUI->m_BrushLineAngleSlider->activate();
+            pUI->m_AnotherGradientLightButton->deactivate();
+            break;
+            
+        case BRUSH_DIRECTION:
+            pUI->m_BrushLineAngleSlider->deactivate();
+            pUI->m_AnotherGradientLightButton->deactivate();
+            break;
+            
+        case GRADIENT:
+            pUI->m_BrushLineAngleSlider->deactivate();
+            pUI->m_AnotherGradientLightButton->activate();
+            break;
+            
+        default:
+            break;
     }
     
-    pUI->m_nLineAngleType = lineAngleType;
 }
 
 
@@ -753,9 +786,9 @@ void ImpressionistUI::cb_edgeClippingLightButton(Fl_Widget* o, void* v)
         pUI->m_nEdgeClipping=TRUE;
         
         if (pDoc->hasEdgeImage == false) {
-        
-            if (pDoc->m_ucEdgeImage) {
             
+            if (pDoc->m_ucEdgeImage) {
+                
                 pDoc->getEdgeImage();
                 pDoc->hasEdgeImage = true;
             }
@@ -763,6 +796,39 @@ void ImpressionistUI::cb_edgeClippingLightButton(Fl_Widget* o, void* v)
         
     }
 }
+
+
+
+//-----------------------------------------------------------
+// Updates the gradience status from the perpendicular to gradient from anther image
+// light button
+// Called by the UI when the line width edge clipping light button is pressed
+//-----------------------------------------------------------
+void ImpressionistUI::cb_anotherGradientLightButton(Fl_Widget* o, void* v)
+{
+    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
+    ImpressionistDoc* pDoc=pUI->getDocument();
+    
+    
+    if (pUI->m_nAnotherGradient==TRUE) pUI->m_nAnotherGradient=FALSE;
+    
+    else {
+        
+        pUI->m_nAnotherGradient=TRUE;
+        
+        if (pDoc->hasAnotherImage == false) {
+            
+            char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getAnotherImageName() );
+            if (newfile != NULL) {
+                pDoc->loadAnotherImage(newfile);
+                pDoc->hasAnotherImage = true;
+            }
+            
+        }
+    }
+}
+
+
 
 
 //-----------------------------------------------------------
@@ -932,6 +998,16 @@ bool ImpressionistUI::getEdgeClipping()
     return m_nEdgeClipping;
 }
 
+
+//------------------------------------------------
+// Return if use another gradient or not
+//------------------------------------------------
+bool ImpressionistUI::getAnotherGradient()
+{
+    return m_nAnotherGradient;
+}
+
+
 //------------------------------------------------
 // Return the line brush width
 //------------------------------------------------
@@ -960,12 +1036,11 @@ int ImpressionistUI::getLineAngle()
     
     switch (m_nLineAngleType) {
         case SLIDER_RIGHT:
-            
+            m_nLineAngle = int (m_BrushLineAngleSlider->value());
             break;
             
         case BRUSH_DIRECTION:
             m_nLineAngle = m_paintView->getBrushDirection();
-            
             break;
             
         case GRADIENT:
@@ -977,6 +1052,7 @@ int ImpressionistUI::getLineAngle()
     }
     
     return m_nLineAngle;
+            
     
 }
 
@@ -1001,6 +1077,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
         { "&Apply Filter...",	FL_ALT + 'f', (Fl_Callback *)ImpressionistUI::cb_applyFilter },
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 		
+        { "&Load Another Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_another_image },
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 
@@ -1157,35 +1234,40 @@ ImpressionistUI::ImpressionistUI() {
 	// brush dialog definition
 	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
 		// Add a brush type choice to the dialog
-		m_BrushTypeChoice = new Fl_Choice(50,10,180,25,"&Brush");
+		m_BrushTypeChoice = new Fl_Choice(50,10,230,25,"&Brush");
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
 		m_BrushTypeChoice->menu(brushTypeMenu);
 		m_BrushTypeChoice->callback(cb_brushChoice);
     
     
         // Add a line angle choice to the dialog
-        m_LineAngleTypeChoice = new Fl_Choice(80,45,150,25,"&Line Angle");
+        m_LineAngleTypeChoice = new Fl_Choice(80,45,200,25,"&Line Angle");
         m_LineAngleTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
         m_LineAngleTypeChoice->menu(lineAngleTypeMenu);
         m_LineAngleTypeChoice->callback(cb_lineAngleChoice);
         m_LineAngleTypeChoice->deactivate();
 		
         // Add clear canvas button
-        m_ClearCanvasButton = new Fl_Button(250,10,120,25,"&Clear Canvas");
+        m_ClearCanvasButton = new Fl_Button(295,10,95,25,"&Clear Canvas");
 		m_ClearCanvasButton->user_data((void*)(this));
 		m_ClearCanvasButton->callback(cb_clear_canvas_button);
     
         // Add multi color button to control the color source of scatted brush
-        m_MultiColorLightButton = new Fl_Light_Button(250,45,120,25,"&Multi Color");
+        m_MultiColorLightButton = new Fl_Light_Button(295,45,95,25,"&Multi Color");
         m_MultiColorLightButton->user_data((void*)(this));   // record self to be used by static callback functions
         m_MultiColorLightButton->callback(cb_multiColorLightButton);
         m_MultiColorLightButton->deactivate();
     
         // Add ddge clipping button
-        m_EdgeClippingLightButton = new Fl_Light_Button(10,180,130,25,"&Edge Clipping");
+        m_EdgeClippingLightButton = new Fl_Light_Button(10,185,120,25,"&Edge Clipping");
         m_EdgeClippingLightButton->user_data((void*)(this));   // record self to be used by static callback functions
         m_EdgeClippingLightButton->callback(cb_edgeClippingLightButton);
     
+        // Add another gradient button
+        m_AnotherGradientLightButton = new Fl_Light_Button(150,185,235,25,"&Perpendicular to Another Gradient");
+        m_AnotherGradientLightButton->user_data((void*)(this));   // record self to be used by static callback functions
+        m_AnotherGradientLightButton->callback(cb_anotherGradientLightButton);
+        m_AnotherGradientLightButton->deactivate();
     
 		// Add brush size slider to the dialog
 		m_BrushSizeSlider = new Fl_Value_Slider(10, 80, 300, 20, "Size");

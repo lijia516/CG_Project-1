@@ -64,6 +64,7 @@ public:
     Fl_Light_Button*    m_EdgeClippingLightButton;
     Fl_Light_Button*    m_MultiColorLightButton;
     Fl_Light_Button*    m_RandSpaceLightButton;
+    Fl_Light_Button*    m_AnotherGradientLightButton;
     
 // for apply filter dialog
     Fl_Window*			m_applyFilterDialog;
@@ -116,6 +117,7 @@ public:
     bool                getMultiColor();
     bool                getEdgeClipping();
     bool                getRandSpace();
+    bool                getAnotherGradient();
 
 	// Callbacks for the image filter dialogue (different from
 	// the other callbacks because they aren't static)
@@ -142,6 +144,7 @@ private:
     bool    m_nEdgeClipping;
     bool    m_nMultiColor;
     bool    m_nRandSpace;
+    bool    m_nAnotherGradient;
 
 	// These attributes are set by the filter kernel UI
 	double fltKernel[FLT_WIDTH*FLT_HEIGHT];		//the kernel of the image filter
@@ -162,6 +165,7 @@ private:
 	// All callbacks here.  Callbacks are declared 
 	// static
 	static void	cb_load_image(Fl_Menu_* o, void* v);
+    static void	cb_load_another_image(Fl_Menu_* o, void* v);
 	static void	cb_save_image(Fl_Menu_* o, void* v);
 	static void	cb_brushes(Fl_Menu_* o, void* v);
    
@@ -201,9 +205,11 @@ private:
     static void cb_view_edge_image(Fl_Menu_* o, void* v);
     static void cb_view_grayscale_image(Fl_Menu_* o, void* v);
     static void cb_view_original_image(Fl_Menu_* o, void* v);
+    static void cb_view_another_image(Fl_Menu_* o, void* v);
     static void cb_edgeClippingLightButton(Fl_Widget* o, void* v);
     static void cb_multiColorLightButton(Fl_Widget* o, void* v);
     static void cb_randSpaceLightButton(Fl_Widget* o, void* v);
+    static void cb_anotherGradientLightButton(Fl_Widget* o, void* v);
 
 };
 

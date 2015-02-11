@@ -16,7 +16,7 @@ BMP_BITMAPFILEHEADER bmfh;
 BMP_BITMAPINFOHEADER bmih; 
 
 // Bitmap data returned is (R,G,B) tuples in row-major order.
-unsigned char* readBMP(char*	fname, 
+unsigned char* readBMP(char*	fname,
 					   int&		width,
 					   int&		height)
 { 
