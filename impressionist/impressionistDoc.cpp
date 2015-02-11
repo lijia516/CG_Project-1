@@ -198,6 +198,22 @@ bool ImpressionistDoc::getAnotherGradient()
     return m_pUI->getAnotherGradient();
 }
 
+//---------------------------------------------------------
+// Returns the size of the brush.
+//---------------------------------------------------------
+bool ImpressionistDoc::getColorBlending()
+{
+    return m_pUI->getColorBlending();
+}
+
+//---------------------------------------------------------
+// Returns the size of the brush.
+//---------------------------------------------------------
+double* ImpressionistDoc::getColorChoice()
+{
+    return m_pUI->getColorChoice();
+}
+
 
 // set the width of the line brush.
 //---------------------------------------------------------

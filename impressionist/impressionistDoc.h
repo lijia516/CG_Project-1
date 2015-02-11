@@ -67,6 +67,12 @@ public:
     bool		getAnotherEdgeClipping();				// get the UI edge clipping
     bool		getAnotherGradient();			// get the UI another gradient
     
+    
+    bool		getColorBlending();						// get the UI size
+    double*		getColorChoice();						// get the UI size
+    
+    
+    
 	char*	getImageName();					// get the current image name
     char*	getAnotherImageName();					// get the current image name
     char*	getBlackAndWhiteImageName();					// get the current image name

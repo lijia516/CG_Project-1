@@ -52,7 +52,7 @@ in links on the fltk help session page.
 
 	//----The window callback--------------------------
 	// One of the callbacks
-	void ImpressionistUI::cb_load(Fl_Menu_* o, void* v) 
+	void ImpressionistUI::c(Fl_Menu_* o, void* v)
 	{	
 		ImpressionistDoc *pDoc=whoami(o)->getDocument();
 
@@ -188,6 +188,39 @@ void ImpressionistUI::cb_load_image(Fl_Menu_* o, void* v)
 	}
 }
 
+
+double ImpressionistUI::m_nColorChoice[3] = {0,0,0};
+
+//------------------------------------------------------------------
+// Brings up a file chooser and then loads the chosen image
+// This is called by the UI when the load image menu item is chosen
+//------------------------------------------------------------------
+/*void ImpressionistUI::cb_color_chooser(Fl_Menu_* o, void* v)
+{
+    ImpressionistUI *pUI=((ImpressionistUI*)(o->user_data()));
+    
+    std::cout<< pUI->m_ColorChooser->r() <<"\n";
+    
+    
+    if (newColor == 1) {
+        
+        pUI->m_nColorBlending = true;
+        
+        std::cout<<"color blending true\n";
+        
+      //  std::cout<<pUI->m_nColorChoice[0]<<","<<pUI->m_nColorChoice[1]<<","<<pUI->m_nColorChoice[2]<<"\n";
+        
+        
+    } else {
+        pUI->m_nColorBlending = false;
+        m_nColorChoice[0] = 0;
+        m_nColorChoice[1] = 0;
+        m_nColorChoice[2] = 0;
+    }
+  
+  
+ 
+} */
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then loads the chosen image
@@ -377,6 +410,8 @@ void ImpressionistUI::cb_view_original_image(Fl_Menu_* o, void* v)
     pDoc->m_pUI->m_origView->refresh();
     
 }
+
+
 
 
 //-----------------------------------------------------------
@@ -1028,6 +1063,23 @@ void ImpressionistUI::setAlpha( float alpha )
 
 
 //------------------------------------------------
+// Return the color blending
+//------------------------------------------------
+bool ImpressionistUI::getColorBlending()
+{
+    return m_nColorBlending;
+}
+
+//------------------------------------------------
+// Return the color blending
+//------------------------------------------------
+double* ImpressionistUI::getColorChoice()
+{
+    return m_nColorChoice;
+}
+
+
+//------------------------------------------------
 // Return the multi color
 //------------------------------------------------
 bool ImpressionistUI::getMultiColor()
@@ -1137,7 +1189,7 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Brushes...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_brushes },
         { "&Apply Filter...",	FL_ALT + 'f', (Fl_Callback *)ImpressionistUI::cb_applyFilter },
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
-		
+		//{ "&Color", FL_ALT + 'r', (Fl_Callback *)ImpressionistUI::cb_color_chooser },
         { "&Load Another Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_another_image },
         { "&Load B&W Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_black_and_white_image },
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
@@ -1294,7 +1346,7 @@ ImpressionistUI::ImpressionistUI() {
     m_nDrawSpace = 5;
     
 	// brush dialog definition
-	m_brushDialog = new Fl_Window(400, 325, "Brush Dialog");
+	m_brushDialog = new Fl_Window(400, 500, "Brush Dialog");
 		// Add a brush type choice to the dialog
 		m_BrushTypeChoice = new Fl_Choice(50,10,230,25,"&Brush");
 		m_BrushTypeChoice->user_data((void*)(this));	// record self to be used by static callback functions
@@ -1430,6 +1482,9 @@ ImpressionistUI::ImpressionistUI() {
         m_CoarseToFinePaintButton->user_data((void*)(this));
         m_CoarseToFinePaintButton->callback(cb_coarse_to_fine_paint_button);
     
+    
+        m_ColorChooser = new Fl_Color_Chooser(10, 350, 300, 125, "&Color Chooser");
+        m_ColorChooser->user_data((void*)(this));
 
     m_brushDialog->end();
 
