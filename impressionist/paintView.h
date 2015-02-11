@@ -33,6 +33,7 @@ public:
     int getBrushDirection();
     
     void setPaintBitstart(GLvoid* bitStart);
+    Point getViewPaintCursorPosition();
     
 	ImpressionistDoc *m_pDoc;
 

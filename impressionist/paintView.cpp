@@ -192,6 +192,10 @@ int PaintView::handle(int event)
              pre_coord = coord;
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
+            
+        m_pDoc->m_pUI->m_origView->refresh();
+            
+            
 		if (Fl::event_button()>1)
 			eventToDo=RIGHT_MOUSE_DRAG;
 		else
@@ -214,6 +218,7 @@ int PaintView::handle(int event)
              pre_coord = coord;
 		coord.x = Fl::event_x();
 		coord.y = Fl::event_y();
+        m_pDoc->m_pUI->m_origView->refresh();
 		break;
 	default:
 		return 0;
@@ -351,7 +356,9 @@ int PaintView::getWindowHeight() {
 }
 
 
-void PaintView::setPaintBitstart(GLvoid* painBitstart) {
+Point PaintView::getViewPaintCursorPosition() {
     
-    m_pPaintBitstart = painBitstart;
+    Point p(coord.x, m_nEndRow - coord.y);
+    
+    return p;
 }

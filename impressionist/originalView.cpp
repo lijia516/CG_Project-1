@@ -13,6 +13,9 @@
 #define min(a, b)	( ( (a)<(b) ) ? (a) : (b) )
 #endif
 
+static Point p;
+
+
 OriginalView::OriginalView(int			x, 
 						   int			y, 
 						   int			w, 
@@ -98,7 +101,18 @@ void OriginalView::draw()
 		glPixelStorei( GL_UNPACK_ROW_LENGTH, m_pDoc->m_nWidth );
 		glDrawBuffer( GL_BACK );
 		glDrawPixels( drawWidth, drawHeight, GL_RGB, GL_UNSIGNED_BYTE, bitstart );
-
+        
+        
+        glBegin( GL_POLYGON );
+            glColor3f(1, 0, 0);
+            Point p = m_pDoc->getViewPaintCursorPosition();
+            glVertex2d( p.x - 2 , p.y - 2);
+            glVertex2d( p.x + 2 , p.y - 2);
+            glVertex2d( p.x + 2 , p.y + 2);
+            glVertex2d( p.x - 2 , p.y + 2);
+        glEnd();
+        
+        
 	}
 			
 	glFlush();

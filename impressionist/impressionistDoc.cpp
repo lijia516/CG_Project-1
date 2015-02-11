@@ -134,6 +134,15 @@ void ImpressionistDoc::setBrushType(int type)
 //---------------------------------------------------------
 // Returns the size of the brush.
 //---------------------------------------------------------
+Point ImpressionistDoc::getViewPaintCursorPosition()
+{
+    return m_pUI->m_paintView->getViewPaintCursorPosition();
+}
+
+
+//---------------------------------------------------------
+// Returns the size of the brush.
+//---------------------------------------------------------
 int ImpressionistDoc::getSize()
 {
 	return m_pUI->getSize();
