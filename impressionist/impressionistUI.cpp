@@ -220,6 +220,21 @@ void ImpressionistUI::cb_load_black_and_white_image(Fl_Menu_* o, void* v)
 }
 
 
+//------------------------------------------------------------------
+// Brings up a file chooser and then loads the chosen image
+// This is called by the UI when the load image menu item is chosen
+//------------------------------------------------------------------
+void ImpressionistUI::cb_load_alpha_map_image(Fl_Menu_* o, void* v)
+{
+    ImpressionistDoc *pDoc=whoami(o)->getDocument();
+    
+    char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getAlphaMapImageName() );
+    if (newfile != NULL) {
+        pDoc->loadAlphaMapImage(newfile);
+        pDoc->hasAlphaMapImage = true;
+    }
+}
+
 
 //------------------------------------------------------------------
 // Brings up a file chooser and then saves the painted image
@@ -437,6 +452,18 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
         
         pUI->m_EdgeClippingLightButton->activate();
         pUI->m_AnotherEdgeClippingLightButton->activate();
+    }
+    
+    
+    if (type == 8) {
+        
+        pUI->m_LineAngleTypeChoice->deactivate();
+        pUI->m_BrushLineWidthSlider->deactivate();
+        pUI->m_BrushLineAngleSlider->deactivate();
+        pUI->m_AnotherGradientLightButton->deactivate();
+        pUI->m_EdgeClippingLightButton->deactivate();
+        pUI->m_AnotherEdgeClippingLightButton->deactivate();
+        pUI->m_BrushAlphaSlider->deactivate();
     }
     
 	pDoc->setBrushType(type);
@@ -1172,7 +1199,8 @@ Fl_Menu_Item ImpressionistUI::menuitems[] = {
 		{ "&Clear Canvas", FL_ALT + 'c', (Fl_Callback *)ImpressionistUI::cb_clear_canvas, 0, FL_MENU_DIVIDER },
 		//{ "&Color", FL_ALT + 'r', (Fl_Callback *)ImpressionistUI::cb_color_chooser },
         { "&Load Another Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_another_image },
-        { "&Load B&W Image...",	FL_ALT + 'a', (Fl_Callback *)ImpressionistUI::cb_load_black_and_white_image },
+        { "&Load B&W Image...",	FL_ALT + 'b', (Fl_Callback *)ImpressionistUI::cb_load_black_and_white_image },
+        { "&Load Alpha_Map Image...",	FL_ALT + 'l', (Fl_Callback *)ImpressionistUI::cb_load_alpha_map_image },
 		{ "&Quit",			FL_ALT + 'q', (Fl_Callback *)ImpressionistUI::cb_exit },
 		{ 0 },
 
@@ -1200,6 +1228,7 @@ Fl_Menu_Item ImpressionistUI::brushTypeMenu[NUM_BRUSH_TYPE+1] = {
   {"Scattered Circles",     FL_ALT+'d', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_SCATTERED_CIRCLES},
   {"Triangle",              FL_ALT+'t', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_TRIANGLE},
   {"RandScattered Lines",	FL_ALT+'r', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_RANDSCATTERED_LINES},
+  {"Alpha_Mapped",	FL_ALT+'a', (Fl_Callback *)ImpressionistUI::cb_brushChoice, (void *)BRUSH_ALPHAMAP},
   {0}
 };
 

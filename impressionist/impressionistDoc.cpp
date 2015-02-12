@@ -24,6 +24,7 @@
 #include "scatcircleBrush.h"
 #include "triangleBrush.h"
 #include "randscatlineBrush.h"
+#include "alphaMapBrush.h"
 #include <math.h>
 
 
@@ -39,6 +40,7 @@ ImpressionistDoc::ImpressionistDoc()
 	m_imageName[0]	='\0';	
     m_anotherImageName[0] = '\0';
     m_blackAndWhiteImageName[0] = '\0';
+    m_alphaMapImageName[0] = '\0';
     
 	m_nWidth		= -1;
 	m_ucBitmap		= NULL;
@@ -53,11 +55,13 @@ ImpressionistDoc::ImpressionistDoc()
     m_ucTempPointer = NULL;
     m_ucAnotherImage		= NULL;
     m_ucBlackAndWhiteImage		= NULL;
+    m_ucAlphaMapImage = NULL;
     
     hasEdgeImage = false;
     hasGrayscaleImage = false;
     hasAnotherImage = false;
     hasBlackAndWhiteImage = false;
+    hasAlphaMapImage = false;
 
 	// create one instance of each brush
 	ImpBrush::c_nBrushCount	= NUM_BRUSH_TYPE;
@@ -80,7 +84,10 @@ ImpressionistDoc::ImpressionistDoc()
     = new TriangleBrush( this, "Triangle" );
     ImpBrush::c_pBrushes[BRUSH_RANDSCATTERED_LINES]
     = new RandScatlineBrush( this, "RandScattered Lines" );
-
+    ImpBrush::c_pBrushes[BRUSH_ALPHAMAP]
+    = new AlphaMapBrush( this, "AlphaMap" );
+    
+    
 	// make one of the brushes current
 	m_pCurrentBrush	= ImpBrush::c_pBrushes[0];
 
@@ -109,6 +116,14 @@ char* ImpressionistDoc::getImageName()
 char* ImpressionistDoc::getAnotherImageName()
 {
     return m_anotherImageName;
+}
+
+//---------------------------------------------------------
+// Returns the active picture/painting name
+//---------------------------------------------------------
+char* ImpressionistDoc::getAlphaMapImageName()
+{
+    return m_alphaMapImageName;
 }
 
 
@@ -433,6 +448,42 @@ int ImpressionistDoc::loadBlackAndWhiteImage(char *iname)
     hasBlackAndWhiteImage = true;
     
     std::cout << "finish load black_and_white image" <<"\n";
+    
+    return 1;
+}
+
+
+
+//---------------------------------------------------------
+// Load the specified image
+// This is called by the UI when the load image button is
+// pressed.
+//---------------------------------------------------------
+int ImpressionistDoc::loadAlphaMapImage(char *iname)
+{
+    // try to open the image to read
+    unsigned char*	data;
+    int				width,
+    height;
+    
+    if ( (data=readBMP(iname, width, height))==NULL )
+    {
+        fl_alert("Can't load bitmap file");
+        return 0;
+    }
+    
+    // reflect the fact of loading the new image
+    m_nAlphaMapImageWidth	= width;
+    m_nAlphaMapImageHeight	= height;
+    
+    std::cout << "another w, h: " << width <<","<<height<<"\n";
+    
+    // release old storage
+    delete [] m_ucAlphaMapImage;
+    m_ucAlphaMapImage	= data;
+    hasAlphaMapImage = true;
+    
+    std::cout << "finish load alpha_map image" <<"\n";
     
     return 1;
 }

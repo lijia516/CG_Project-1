@@ -25,6 +25,7 @@ public:
     
     int		loadAnotherImage(char *iname);			// called by the UI to load another image
     int		loadBlackAndWhiteImage(char *iname);			// called by the UI to load another image
+    int		loadAlphaMapImage(char *iname);			// called by the UI to load another image
 
 
 	int     clearCanvas();                  // called by the UI to clear the drawing canvas
@@ -75,6 +76,9 @@ public:
 	char*	getImageName();					// get the current image name
     char*	getAnotherImageName();					// get the current image name
     char*	getBlackAndWhiteImageName();					// get the current image name
+    char*	getAlphaMapImageName();					// get the current image name
+    
+    
     int     checkEdge(int targetX, int targetY);
     
     void	getEdgeImage();         // store edge image in m_ucEdgeImage
@@ -99,6 +103,11 @@ public:
     // Dimensions of black and white image.
     int				m_nBlackAndWhiteImageWidth, m_nBlackAndWhiteImageHeight;
     
+    // Dimensions of another image.
+    int				m_nAlphaMapImageWidth, m_nAlphaMapImageHeight;
+
+    
+    
 	// Bitmaps for original image and painting.
     
 	unsigned char*	m_ucBitmap;
@@ -107,6 +116,8 @@ public:
     unsigned char*	m_ucGrayscaleImage;
     unsigned char*	m_ucAnotherImage;
     unsigned char*	m_ucBlackAndWhiteImage;
+    unsigned char*	m_ucAlphaMapImage;
+    
 
 	// Used by the filtering code so that we can
 	// preview filters before applying.
@@ -126,6 +137,7 @@ public:
     bool hasGrayscaleImage;
     bool hasAnotherImage;
     bool hasBlackAndWhiteImage;
+    bool hasAlphaMapImage;
     
 	// The current active brush.
 	ImpBrush*			m_pCurrentBrush;
@@ -165,6 +177,7 @@ private:
 	char			m_imageName[256];
     char			m_anotherImageName[256];
     char            m_blackAndWhiteImageName[256];
+    char            m_alphaMapImageName[256];
 
 };
 

@@ -20,6 +20,7 @@ enum
 	BRUSH_SCATTERED_CIRCLES = 5,
     BRUSH_TRIANGLE = 6,
     BRUSH_RANDSCATTERED_LINES = 7,
+    BRUSH_ALPHAMAP = 8,
 	NUM_BRUSH_TYPE// Make sure this stays at the end!
 };
 
