@@ -460,6 +460,17 @@ void ImpressionistUI::cb_brushChoice(Fl_Widget* o, void* v)
         pUI->m_EdgeClippingLightButton->deactivate();
         pUI->m_AnotherEdgeClippingLightButton->deactivate();
         pUI->m_BrushAlphaSlider->deactivate();
+        
+        
+        if (pDoc->hasAlphaMapImage == false) {
+            
+            char* newfile = fl_file_chooser("Open File?", "*.bmp", pDoc->getAlphaMapImageName() );
+            if (newfile != NULL) {
+                pDoc->loadAlphaMapImage(newfile);
+                pDoc->hasAlphaMapImage = true;
+            }
+        }
+        
     }
     
 	pDoc->setBrushType(type);
