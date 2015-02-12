@@ -269,10 +269,6 @@ void ImpressionistUI::cb_applyFilter(Fl_Menu_* o, void* v)
 {
     whoami(o)->m_applyFilterDialog->show();
     m_npreviewNum = 0;
-    whoami(o)->scale = 1;
-    whoami(o)->offset = 0;
-    whoami(o)->m_nKernelWidth = 5;
-    whoami(o)->m_nKernelHeight = 5;
 }
 
 
@@ -1280,8 +1276,10 @@ ImpressionistUI::ImpressionistUI() {
     
     
     m_npreviewNum = 0;
-    
-    
+    scale = 1;
+    offset = 0;
+    m_nKernelWidth = 5;
+    m_nKernelHeight = 5;
     //--------------
     // filter
     m_applyFilterDialog = new Fl_Window(400, 325, "Apply Filter Dialog");
