@@ -598,12 +598,8 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
             for (int i = 0; i < 3; i++) {
                 
                 sumColor[i] = sumColor[i] / (sumKernl);
-                std::cout << sumColor[i] << ",";
-                std::cout << divisor << ",";
                 sumColor[i] = sumColor[i] / divisor;
-                std::cout  << sumColor[i] << ",";
                 sumColor[i] += offset;
-                std::cout<< sumColor[i] << "\n";
                 
                 if (sumColor[i] < 0) sumColor[i] =0;
                 else if (sumColor[i] > 255) sumColor[i] = 255;
@@ -812,7 +808,7 @@ int ImpressionistDoc::checkEdge(int targetX, int targetY)
             if (m_ucBlackAndWhiteImage[3*(targetY * m_nBlackAndWhiteImageWidth + targetX) + 0] == 255) return 1;
         }
         
-    } else {
+    } else if (m_pUI->getEdgeClipping()){
         
         if (m_ucEdgeImage) {
             
@@ -854,12 +850,12 @@ int ImpressionistDoc::coarseToFinePainting()
     int colorNew[3];
     
     int maxDiff = 101;
-    while (count < 5 && maxDiff > 100) {
+    while (count < 6 && maxDiff > 100) {
     
-         std::cout<<"count, maxDiff: " << count << ","<<maxDiff <<"\n";
+         std::cout<<"paint: " << count <<"\n";
         
-    for (int i = 0; i < m_nPaintHeight; i = i+gap) {
-        for (int j = 0; j < m_nPaintWidth; j = j+ gap) {
+    for (int i = 0; i < m_nPaintHeight; i = i + gap) {
+        for (int j = 0; j < m_nPaintWidth; j = j + gap) {
             
             Point p(j, i);
             
@@ -872,7 +868,7 @@ int ImpressionistDoc::coarseToFinePainting()
             
             double diff = (abs(colorNew[0]-colorOrigin[0]) + abs(colorNew[1]-colorOrigin[1]) + abs(colorNew[2]-colorOrigin[2]))/3;
             
-           if (diff > 10) {
+           if (diff > 20) {
                m_pCurrentBrush->BrushBegin(p,p);
             
                if (diff > maxDiff) maxDiff = diff;
@@ -886,8 +882,9 @@ int ImpressionistDoc::coarseToFinePainting()
         
          m_pUI->m_paintView->refresh();
     }
+        
     glFlush();
-    
+        
     #ifndef MESA
     // To avoid flicker on some machines.
     glDrawBuffer(GL_BACK);
@@ -898,14 +895,17 @@ int ImpressionistDoc::coarseToFinePainting()
     // refresh paint view as well
    
         count++;
-        brushSize = brushSize / 3 + 3;
+        brushSize = brushSize / 3 + 1;
         setSize(brushSize);
         
-        gap = gap/3+2;
+        gap = gap/3+1;
         
         m_pUI->setDrawSpace(gap);
         
     }
+    
+    std::cout<<"finish coarseToFinePainting \n";
+    
     return 0;
 }
 

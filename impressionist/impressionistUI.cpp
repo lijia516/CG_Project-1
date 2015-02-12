@@ -870,6 +870,10 @@ void ImpressionistUI::cb_edgeClippingLightButton(Fl_Widget* o, void* v)
         }
         
     }
+    
+    
+    std::cout << "use edge clipping: " << pUI->m_nEdgeClipping << "\n";
+    
 }
 
 
@@ -900,6 +904,9 @@ void ImpressionistUI::cb_anotherEdgeClippingLightButton(Fl_Widget* o, void* v)
             
         }
     }
+    
+    std::cout << "use another edge clipping: " << pUI->m_nAnotherEdgeClipping << "\n";
+    
 }
 
 
@@ -930,6 +937,10 @@ void ImpressionistUI::cb_anotherGradientLightButton(Fl_Widget* o, void* v)
             
         }
     }
+    
+    
+    std::cout << "use another gradient: " << pUI->m_nAnotherGradient << "\n";
+    
 }
 
 
@@ -953,6 +964,8 @@ void ImpressionistUI::cb_multiColorLightButton(Fl_Widget* o, void* v)
         pUI->m_nMultiColor=TRUE;
         
     }
+    
+    std::cout << "multi color: " << pUI->m_nMultiColor << "\n";
 }
 
 

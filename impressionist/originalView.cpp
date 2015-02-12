@@ -121,7 +121,7 @@ void OriginalView::draw()
 
 void OriginalView::setOriginalView(int originalView) {
     m_ncOriginalView = originalView;
-    std::cout << "m_ncOriginalView: " << m_ncOriginalView << "\n";
+    std::cout << "Original View: " << m_ncOriginalView << "\n";
 }
 
 void OriginalView::refresh()
