@@ -1473,7 +1473,8 @@ ImpressionistUI::ImpressionistUI() {
         // color chooser
         m_ColorChooser = new Fl_Color_Chooser(10, 350, 300, 125);
         m_ColorChooser->user_data((void*)(this));
-
+        m_ColorChooser->rgb(1,1,1);
+    
     m_brushDialog->end();
 
 }
