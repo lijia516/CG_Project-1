@@ -75,6 +75,7 @@ public:
     Fl_Button*          m_PreviewFilterButton;
     Fl_Button*          m_ApplyFilterButton;
     Fl_Button*          m_CancleFilterButton;
+    Fl_Button*          m_RestoreImageButton;
     Fl_Int_Input*       m_KernelWidthInput;
     Fl_Int_Input*       m_KernelHeightInput;
     Fl_Float_Input*     m_KernelValues[FLT_WIDTH * FLT_HEIGHT];
@@ -208,6 +209,8 @@ private:
     
     static void	static_cb_cancle_filter_button(Fl_Widget* o, void* v);
     void cb_cancle_filter_button(Fl_Widget* o, void* v);
+    
+    static void	cb_restore_image_button(Fl_Widget* o, void* v);
     
     static void cb_KernelWidthInput(Fl_Widget* o, void* v);
     static void cb_KernelHeightInput(Fl_Widget* o, void* v);

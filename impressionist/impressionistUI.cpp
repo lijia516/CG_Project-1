@@ -759,6 +759,22 @@ void ImpressionistUI::cb_cancle_filter_button(Fl_Widget* o, void* v)
 }
 
 
+
+//------------------------------------------------------------
+// Cancle filter button in Apply filter diagonal.
+// Called by the UI when the cancle filter button is pushed
+//------------------------------------------------------------
+
+void ImpressionistUI::cb_restore_image_button(Fl_Widget* o, void* v)
+{
+    ImpressionistDoc * pDoc = ((ImpressionistUI*)(o->user_data()))->getDocument();
+    pDoc->m_ucPainting = pDoc->m_ucTempPointer;
+    pDoc->m_pUI->m_paintView->refresh();
+    m_npreviewNum = 0;
+ 
+}
+
+
 //------------------------------------------------------------
 // Clears the paintview canvas.
 // Called by the UI when the clear canvas button is pushed
@@ -1330,7 +1346,7 @@ ImpressionistUI::ImpressionistUI() {
     
         // Add a Preview filter button to the dialog
     
-        m_PreviewFilterButton = new Fl_Button(20,280,100,25,"&Preview Filter");
+        m_PreviewFilterButton = new Fl_Button(220,235,100,25,"&Preview Filter");
         m_PreviewFilterButton->user_data((void*)(this));
         m_PreviewFilterButton->callback(cb_preview_filter_button);
 
@@ -1348,6 +1364,13 @@ ImpressionistUI::ImpressionistUI() {
         m_CancleFilterButton = new Fl_Button(280,280,100,25,"&Cancle Filter");
         m_CancleFilterButton->user_data((void*)(this));
         m_CancleFilterButton->callback(static_cb_cancle_filter_button, this);
+    
+    
+        // Add a restore image button to the dialog
+    
+        m_RestoreImageButton = new Fl_Button(20,280,100,25,"&Restore Image");
+        m_RestoreImageButton->user_data((void*)(this));
+        m_RestoreImageButton->callback(cb_restore_image_button, this);
     
     
     m_applyFilterDialog->end();
