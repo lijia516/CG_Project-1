@@ -618,13 +618,14 @@ void ImpressionistUI::cb_KernelHeightInput(Fl_Widget* o, void* v)
 // set kernel scale
 void ImpressionistUI::cb_KernelScaleInput(Fl_Widget* o, void* v)
 {
-    ((ImpressionistUI*)(o->user_data()))->scale = atoi( ((Fl_Float_Input *)o)->value() );
+    ((ImpressionistUI*)(o->user_data()))->scale = std::stod( ((Fl_Float_Input *)o)->value() );
+
 }
 
 // set kernel offset
 void ImpressionistUI::cb_KernelOffsetInput(Fl_Widget* o, void* v)
 {
-    ((ImpressionistUI*)(o->user_data()))->offset = atoi( ((Fl_Float_Input *)o)->value() );
+    ((ImpressionistUI*)(o->user_data()))->offset = std::stod( ((Fl_Float_Input *)o)->value() );
 }
 
 
@@ -642,13 +643,13 @@ int ImpressionistUI::getKernelHeight()
 }
 
 // get kernel scale
-int ImpressionistUI::getKernelScale()
+double ImpressionistUI::getKernelScale()
 {
     return scale;
 }
 
 // get kernel offset
-int ImpressionistUI::getKernelOffset()
+double ImpressionistUI::getKernelOffset()
 {
     return offset;
 }
@@ -661,10 +662,8 @@ double* ImpressionistUI::getKernelValues()
     
     for (int i = 0; i < 25; i++) {
             
-        values[i] = (double) atoi( m_KernelValues[i] -> value());
-        
+        values[i] = std::stod( m_KernelValues[i] -> value());
     }
-
     
     return values;
 }
@@ -702,8 +701,8 @@ void ImpressionistUI::cb_preview_filter_button(Fl_Widget* o, void* v)
     const double *filterKernel = pDoc->m_pUI->getKernelValues();
     
     
-    int m_scale = pDoc->m_pUI->scale;
-    int m_offset = pDoc->m_pUI->offset;
+    double m_scale = pDoc->m_pUI->scale;
+    double m_offset = pDoc->m_pUI->offset;
     int m_KernelWidth = pDoc->m_pUI->m_nKernelWidth;
     int m_KernelHeight = pDoc->m_pUI->m_nKernelHeight;
     

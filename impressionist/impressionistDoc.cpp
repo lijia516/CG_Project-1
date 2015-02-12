@@ -598,8 +598,12 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
             for (int i = 0; i < 3; i++) {
                 
                 sumColor[i] = sumColor[i] / (sumKernl);
+                std::cout << sumColor[i] << ",";
+                std::cout << divisor << ",";
                 sumColor[i] = sumColor[i] / divisor;
+                std::cout  << sumColor[i] << ",";
                 sumColor[i] += offset;
+                std::cout<< sumColor[i] << "\n";
                 
                 if (sumColor[i] < 0) sumColor[i] =0;
                 else if (sumColor[i] > 255) sumColor[i] = 255;
@@ -607,6 +611,9 @@ void ImpressionistDoc::applyFilter( const unsigned char* sourceBuffer,
                 destBuffer[3*(row*srcBufferWidth+col)+i] = (unsigned char) sumColor[i];
                 
             }
+            
+            
+            
             
         }
     }

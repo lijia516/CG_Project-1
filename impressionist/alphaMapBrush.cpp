@@ -35,7 +35,7 @@ void AlphaMapBrush::BrushMove( const Point source, const Point target )
 		return;
 	}
     
-    std::cout << "alpha_map brush" << "\n";
+  //  std::cout << "alpha_map brush" << "\n";
     
     int half_Width = pDoc->m_nAlphaMapImageWidth / 2;
     int half_Height = pDoc->m_nAlphaMapImageHeight / 2;
@@ -50,7 +50,7 @@ void AlphaMapBrush::BrushMove( const Point source, const Point target )
                 setAlphaMapBrushColor(source, i+half_Width, j+half_Height);
                 
                 
-                 std::cout << "x, y: " << target.x + i << ","<<target.y + j << "\n";
+              //   std::cout << "x, y: " << target.x + i << ","<<target.y + j << "\n";
                 
                 
                 glVertex2d( target.x + i, target.y + j);
@@ -88,8 +88,8 @@ void AlphaMapBrush::setAlphaMapBrushColor(Point source, int x, int y){
     
     color[3] = static_cast<GLubyte>(255.0f * intensity);
     
-    std::cout << color[0]-'0'<< ","<< color[1]-'0'<<","<< color[2]-'0'<< ","<< color[3]-'0'<< "\n";
-    std::cout << intensity << "\n";
+    //std::cout << color[0]-'0'<< ","<< color[1]-'0'<<","<< color[2]-'0'<< ","<< color[3]-'0'<< "\n";
+    //std::cout << intensity << "\n";
     
     glColor4ubv( color );
     

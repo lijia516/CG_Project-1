@@ -112,8 +112,8 @@ public:
     void				setLineAngle(int lineAngle);
     
     
-    int                 getKernelScale();
-    int                 getKernelOffset();
+    double              getKernelScale();
+    double              getKernelOffset();
     int                 getKernelHeight();
     int                 getKernelWidth();
     double*             getKernelValues();
